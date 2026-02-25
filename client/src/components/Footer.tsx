@@ -21,7 +21,7 @@ export default function Footer() {
           {/* Brand */}
           <div className="lg:col-span-1">
             <Link href="/">
-              <img src={logoPath} alt="Norm Yacht" className="h-14 w-auto object-contain mb-5 cursor-pointer brightness-0 invert" />
+              <img src={logoPath} alt="Norm Yacht" className="h-14 w-auto object-contain mb-5 cursor-pointer mix-blend-screen" />
             </Link>
             <p className="text-gray-400 text-sm leading-relaxed mb-6">
               {t.footer.description}
@@ -134,10 +134,14 @@ export default function Footer() {
           <p className="text-gray-500 text-sm">
             © {new Date().getFullYear()} Norm Yacht. {t.footer.rights}
           </p>
-          <div className="flex items-center gap-6">
-            <Link href="/admin">
-              <span className="text-gray-600 text-xs hover:text-[#F5A623] transition-colors cursor-pointer">Admin</span>
-            </Link>
+          <div className="group flex items-center gap-1.5 text-xs text-gray-600">
+            <span>Design by</span>
+            <span className="relative inline-block font-bold text-[#F5A623] animate-pulse-slow">
+              <span className="inline-block transition-all duration-500 group-hover:scale-110 group-hover:text-white">
+                3Y Tasarım & Yazılım Hizmetleri
+              </span>
+              <span className="absolute -bottom-0.5 left-0 w-0 h-[1px] bg-[#F5A623] transition-all duration-500 group-hover:w-full" />
+            </span>
           </div>
         </div>
       </div>
