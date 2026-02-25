@@ -5,15 +5,7 @@ import { useLanguage } from "@/lib/languageContext";
 import { useTranslation } from "@/lib/i18n";
 import type { Service } from "@shared/schema";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowRight, Wrench, Waves, Navigation, Settings, Activity, Gauge, Hammer, Zap, Cog, Anchor } from "lucide-react";
-
-const iconMap: Record<string, any> = {
-  Waves, Anchor, Navigation, Settings, Activity, Gauge, Hammer, Zap, Cog, Wrench, Crane: Anchor,
-};
-
-function getIcon(iconName: string) {
-  return iconMap[iconName] || Wrench;
-}
+import { ArrowRight } from "lucide-react";
 
 export default function Services() {
   const { language } = useLanguage();
@@ -44,7 +36,6 @@ export default function Services() {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {services.map((service) => {
-                const Icon = getIcon(service.icon || "Wrench");
                 const title = language === "tr" && service.titleTr ? service.titleTr :
                              language === "ru" && service.titleRu ? service.titleRu : service.title;
                 const description = language === "tr" && service.descriptionTr ? service.descriptionTr :
@@ -52,17 +43,24 @@ export default function Services() {
                 return (
                   <Link key={service.id} href={`/services/${service.slug}`}>
                     <div
-                      className="service-card-hover bg-white rounded-lg p-7 border border-gray-100 shadow-sm cursor-pointer group h-full flex flex-col"
+                      className="service-card-hover bg-white rounded-lg overflow-hidden border border-gray-100 shadow-sm cursor-pointer group h-full flex flex-col"
                       data-testid={`card-service-${service.id}`}
                     >
-                      <div className="w-14 h-14 rounded-xl bg-[#F5A623]/10 flex items-center justify-center mb-5 group-hover:bg-[#F5A623] transition-colors flex-shrink-0">
-                        <Icon className="w-7 h-7 text-[#F5A623] group-hover:text-white transition-colors" />
+                      <div className="relative w-full h-48 overflow-hidden flex-shrink-0">
+                        <img
+                          src={service.image || "https://images.unsplash.com/photo-1605281317010-fe5ffe798166?w=600&h=400&fit=crop"}
+                          alt={title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                       </div>
-                      <h3 className="font-bold text-gray-900 text-lg mb-3 group-hover:text-[#F5A623] transition-colors">{title}</h3>
-                      <p className="text-gray-600 text-sm leading-relaxed flex-1 line-clamp-4">{description}</p>
-                      <div className="mt-5 flex items-center text-[#F5A623] text-sm font-semibold border-t border-gray-100 pt-4">
-                        {t.services.viewDetail}
-                        <ArrowRight className="ml-1.5 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      <div className="p-6 flex flex-col flex-1">
+                        <h3 className="font-bold text-gray-900 text-lg mb-3 group-hover:text-[#F5A623] transition-colors">{title}</h3>
+                        <p className="text-gray-600 text-sm leading-relaxed flex-1 line-clamp-3">{description}</p>
+                        <div className="mt-5 flex items-center text-[#F5A623] text-sm font-semibold border-t border-gray-100 pt-4">
+                          {t.services.viewDetail}
+                          <ArrowRight className="ml-1.5 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        </div>
                       </div>
                     </div>
                   </Link>

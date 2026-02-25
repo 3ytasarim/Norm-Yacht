@@ -252,21 +252,27 @@ function ServicesSection() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {displayServices.map((service) => {
-              const Icon = getIcon(service.icon || "Wrench");
               const title = language === "tr" && service.titleTr ? service.titleTr :
                            language === "ru" && service.titleRu ? service.titleRu : service.title;
               const description = language === "tr" && service.descriptionTr ? service.descriptionTr :
                                   language === "ru" && service.descriptionRu ? service.descriptionRu : service.description;
               return (
                 <Link key={service.id} href={`/services/${service.slug}`}>
-                  <div className="service-card-hover bg-white rounded-lg p-7 border border-gray-100 shadow-sm cursor-pointer group" data-testid={`card-service-${service.id}`}>
-                    <div className="w-12 h-12 rounded-lg bg-[#F5A623]/10 flex items-center justify-center mb-5 group-hover:bg-[#F5A623] transition-colors">
-                      <Icon className="w-6 h-6 text-[#F5A623] group-hover:text-white transition-colors" />
+                  <div className="service-card-hover bg-white rounded-lg overflow-hidden border border-gray-100 shadow-sm cursor-pointer group" data-testid={`card-service-${service.id}`}>
+                    <div className="relative w-full h-44 overflow-hidden">
+                      <img
+                        src={service.image || "https://images.unsplash.com/photo-1605281317010-fe5ffe798166?w=600&h=400&fit=crop"}
+                        alt={title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                     </div>
-                    <h3 className="font-bold text-gray-900 text-lg mb-3 group-hover:text-[#F5A623] transition-colors">{title}</h3>
-                    <p className="text-gray-600 text-sm leading-relaxed line-clamp-3">{description}</p>
-                    <div className="mt-4 flex items-center text-[#F5A623] text-sm font-semibold">
-                      {t.services.viewDetail} <ArrowRight className="ml-1.5 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    <div className="p-6">
+                      <h3 className="font-bold text-gray-900 text-lg mb-2 group-hover:text-[#F5A623] transition-colors">{title}</h3>
+                      <p className="text-gray-600 text-sm leading-relaxed line-clamp-2">{description}</p>
+                      <div className="mt-4 flex items-center text-[#F5A623] text-sm font-semibold">
+                        {t.services.viewDetail} <ArrowRight className="ml-1.5 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      </div>
                     </div>
                   </div>
                 </Link>

@@ -341,6 +341,13 @@ function ServicesManager() {
               </Select>
             </div>
             <div>
+              <Label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Card Image URL</Label>
+              <Input value={formData.image || ""} onChange={(e) => setFormData({ ...formData, image: e.target.value })} placeholder="https://images.unsplash.com/..." data-testid="input-service-card-image" />
+              {formData.image && (
+                <img src={formData.image} alt="preview" className="mt-2 w-full h-24 object-cover rounded border" />
+              )}
+            </div>
+            <div>
               <Label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Order</Label>
               <Input type="number" value={formData.order || 0} onChange={(e) => setFormData({ ...formData, order: parseInt(e.target.value) })} />
             </div>

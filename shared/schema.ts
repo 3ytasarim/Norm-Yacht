@@ -37,6 +37,7 @@ export const services = pgTable("services", {
   descriptionTr: text("description_tr"),
   descriptionRu: text("description_ru"),
   icon: text("icon").default("Wrench"),
+  image: text("image"),
   order: integer("order").default(0),
   active: boolean("active").default(true),
 });
