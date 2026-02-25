@@ -11,7 +11,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import logoPath from "@assets/43219e59-fadc-46c1-b45c-d18f3e4cce0a_1772014162879.jpg";
+import logoPath from "@assets/logo-white.png";
 import { Lock, User } from "lucide-react";
 
 const loginSchema = z.object({
@@ -52,7 +52,7 @@ export default function AdminLogin() {
     <div className="min-h-screen bg-[#0a1428] flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <img src={logoPath} alt="Norm Yacht" className="h-16 w-auto mx-auto object-contain brightness-0 invert mb-6" />
+          <img src={logoPath} alt="Norm Yacht" className="h-16 w-auto mx-auto object-contain mb-6" />
           <h1 className="text-2xl font-black text-white">{t.admin.login}</h1>
           <p className="text-gray-400 mt-1 text-sm">Enter your credentials to access the admin panel</p>
         </div>

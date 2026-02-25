@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/lib/languageContext";
 import { useTranslation } from "@/lib/i18n";
 import type { Service } from "@shared/schema";
-import logoPath from "@assets/43219e59-fadc-46c1-b45c-d18f3e4cce0a_1772014162879.jpg";
+import logoPath from "@assets/logo-transparent.png";
 import { Menu, X, ChevronDown, Youtube, Instagram, Linkedin, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 

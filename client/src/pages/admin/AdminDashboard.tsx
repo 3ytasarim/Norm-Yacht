@@ -17,7 +17,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import type { SliderItem, Service, Project, NewsItem, ContactMessage } from "@shared/schema";
-import logoPath from "@assets/43219e59-fadc-46c1-b45c-d18f3e4cce0a_1772014162879.jpg";
+import logoPath from "@assets/logo-white.png";
 import {
   LayoutDashboard, Image, Wrench, FolderOpen, Newspaper, Mail, LogOut,
   Plus, Pencil, Trash2, Eye, Menu, X, Check, ChevronDown, ChevronRight
@@ -736,7 +736,7 @@ export default function AdminDashboard() {
       <div className={`fixed inset-y-0 left-0 z-40 w-64 bg-[#0a1428] transform transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} lg:relative lg:translate-x-0 lg:flex-shrink-0`}>
         <div className="flex flex-col h-full">
           <div className="p-5 border-b border-white/10">
-            <img src={logoPath} alt="Norm Yacht" className="h-10 w-auto object-contain brightness-0 invert" />
+            <img src={logoPath} alt="Norm Yacht" className="h-10 w-auto object-contain" />
             <div className="text-xs text-gray-500 mt-2 font-semibold uppercase tracking-wider">Admin Panel</div>
           </div>
           <nav className="flex-1 py-4">

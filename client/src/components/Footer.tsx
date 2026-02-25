@@ -3,7 +3,7 @@ import { useLanguage } from "@/lib/languageContext";
 import { useTranslation } from "@/lib/i18n";
 import { useQuery } from "@tanstack/react-query";
 import type { Service } from "@shared/schema";
-import logoPath from "@assets/43219e59-fadc-46c1-b45c-d18f3e4cce0a_1772014162879.jpg";
+import logoWhitePath from "@assets/logo-white.png";
 import { MapPin, Phone, Mail, Youtube, Instagram, Linkedin, Clock } from "lucide-react";
 
 export default function Footer() {
@@ -21,7 +21,7 @@ export default function Footer() {
           {/* Brand */}
           <div className="lg:col-span-1">
             <Link href="/">
-              <img src={logoPath} alt="Norm Yacht" className="h-14 w-auto object-contain mb-5 cursor-pointer mix-blend-screen" />
+              <img src={logoWhitePath} alt="Norm Yacht" className="h-14 w-auto object-contain mb-5 cursor-pointer" />
             </Link>
             <p className="text-gray-400 text-sm leading-relaxed mb-6">
               {t.footer.description}
