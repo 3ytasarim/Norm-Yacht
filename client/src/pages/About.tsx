@@ -148,7 +148,7 @@ export default function About() {
           </div>
           <div className="rounded-lg overflow-hidden shadow-lg aspect-video max-w-4xl mx-auto">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3015.2!2d29.3!3d40.85!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDDCsDUxJzAwLjAiTiAyOcKwMTgnMDAuMCJF!5e0!3m2!1sen!2str!4v1620000000000!5m2!1sen!2str"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3019.5!2d29.3006!3d40.8167!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14cac5a0c56a6d39%3A0x5c69e290a5f1b95a!2zxLBzdGltIFNhbmF5aSBTaXRlc2k!5e0!3m2!1sen!2str!4v1700000000000!5m2!1sen!2str"
               width="100%"
               height="100%"
               style={{ border: 0 }}
