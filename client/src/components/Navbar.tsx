@@ -9,9 +9,9 @@ import { Menu, X, ChevronDown, Youtube, Instagram, Linkedin, Phone } from "lucid
 import { Button } from "@/components/ui/button";
 
 const languageFlags: Record<string, { flag: string; label: string }> = {
-  en: { flag: "🇬🇧", label: "EN" },
-  tr: { flag: "🇹🇷", label: "TR" },
-  ru: { flag: "🇷🇺", label: "RU" },
+  en: { flag: "🇬🇧", label: "English" },
+  tr: { flag: "🇹🇷", label: "Türkçe" },
+  ru: { flag: "🇷🇺", label: "Русский" },
 };
 
 export default function Navbar() {
@@ -197,24 +197,23 @@ export default function Navbar() {
               {/* Language selector */}
               <div className="relative" onMouseLeave={() => setLangOpen(false)}>
                 <button
-                  className="flex items-center gap-1.5 text-sm font-semibold text-gray-700 hover:text-[#F5A623] transition-colors"
+                  className="flex items-center gap-1.5 text-base font-semibold text-gray-700 hover:text-[#F5A623] transition-colors"
                   onMouseEnter={() => setLangOpen(true)}
                   data-testid="button-language-selector"
                 >
-                  <span>{languageFlags[language].flag}</span>
-                  <span>{languageFlags[language].label}</span>
+                  <span className="text-xl leading-none">{languageFlags[language].flag}</span>
                   <ChevronDown className={`w-3 h-3 transition-transform ${langOpen ? "rotate-180" : ""}`} />
                 </button>
                 {langOpen && (
-                  <div className="absolute right-0 top-full w-28 bg-white shadow-xl border border-gray-100 rounded-md py-1 z-50">
+                  <div className="absolute right-0 top-full w-36 bg-white shadow-xl border border-gray-100 rounded-md py-1 z-50">
                     {(["en", "tr", "ru"] as const).map((lang) => (
                       <button
                         key={lang}
-                        className={`w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-orange-50 hover:text-[#F5A623] transition-colors ${language === lang ? "text-[#F5A623] font-semibold" : "text-gray-700"}`}
+                        className={`w-full flex items-center gap-2.5 px-3 py-2 text-sm hover:bg-orange-50 hover:text-[#F5A623] transition-colors ${language === lang ? "text-[#F5A623] font-semibold bg-orange-50/50" : "text-gray-700"}`}
                         onClick={() => { setLanguage(lang); setLangOpen(false); }}
                         data-testid={`button-lang-${lang}`}
                       >
-                        <span>{languageFlags[lang].flag}</span>
+                        <span className="text-lg leading-none">{languageFlags[lang].flag}</span>
                         <span>{languageFlags[lang].label}</span>
                       </button>
                     ))}
@@ -232,17 +231,17 @@ export default function Navbar() {
                   onClick={() => setLangOpen(!langOpen)}
                   data-testid="button-mobile-lang"
                 >
-                  <span>{languageFlags[language].flag}</span>
+                  <span className="text-xl leading-none">{languageFlags[language].flag}</span>
                 </button>
                 {langOpen && (
-                  <div className="absolute right-0 top-full w-24 bg-white shadow-xl border border-gray-100 rounded-md py-1 z-50">
+                  <div className="absolute right-0 top-full w-36 bg-white shadow-xl border border-gray-100 rounded-md py-1 z-50">
                     {(["en", "tr", "ru"] as const).map((lang) => (
                       <button
                         key={lang}
-                        className={`w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-orange-50 hover:text-[#F5A623] transition-colors ${language === lang ? "text-[#F5A623] font-semibold" : "text-gray-700"}`}
+                        className={`w-full flex items-center gap-2.5 px-3 py-2 text-sm hover:bg-orange-50 hover:text-[#F5A623] transition-colors ${language === lang ? "text-[#F5A623] font-semibold bg-orange-50/50" : "text-gray-700"}`}
                         onClick={() => { setLanguage(lang); setLangOpen(false); }}
                       >
-                        <span>{languageFlags[lang].flag}</span>
+                        <span className="text-lg leading-none">{languageFlags[lang].flag}</span>
                         <span>{languageFlags[lang].label}</span>
                       </button>
                     ))}
