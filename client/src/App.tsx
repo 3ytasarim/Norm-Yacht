@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -21,12 +22,21 @@ import AdminLogin from "@/pages/admin/AdminLogin";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import { useLocation } from "wouter";
 
+function ScrollToTop() {
+  const [location] = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location]);
+  return null;
+}
+
 function Layout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
   const isAdmin = location.startsWith("/admin");
-  if (isAdmin) return <>{children}</>;
+  if (isAdmin) return <><ScrollToTop />{children}</>;
   return (
     <div className="flex flex-col min-h-screen">
+      <ScrollToTop />
       <Navbar />
       <main className="flex-1">{children}</main>
       <Footer />
