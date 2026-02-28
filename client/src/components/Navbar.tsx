@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/lib/languageContext";
 import { useTranslation } from "@/lib/i18n";
 import type { Service } from "@shared/schema";
+import { getPath, getServicePath } from "@/lib/routes";
 import logoPath from "@assets/logo-transparent.png";
 import { Menu, X, ChevronDown, Youtube, Instagram, Linkedin, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -73,18 +74,18 @@ export default function Navbar() {
     setLangOpen(false);
   }, [location]);
 
-  const isActive = (path: string) => location === path;
+  const isActive = (path: string) => location === path || location.startsWith(path + "/");
 
   const navLinks = [
     { href: "/", label: t.nav.home },
-    { href: "/about", label: t.nav.about },
-    { href: "/services", label: t.nav.services, hasDropdown: true },
+    { href: getPath("about", language), label: t.nav.about },
+    { href: getPath("services", language), label: t.nav.services, hasDropdown: true },
   ];
 
   const navLinksRight = [
-    { href: "/projects", label: t.nav.projects },
-    { href: "/news", label: t.nav.news },
-    { href: "/contact", label: t.nav.contact },
+    { href: getPath("projects", language), label: t.nav.projects },
+    { href: getPath("news", language), label: t.nav.news },
+    { href: getPath("contact", language), label: t.nav.contact },
   ];
 
   return (
@@ -159,7 +160,7 @@ export default function Navbar() {
                     <Link href={link.href}>
                       <span
                         className={`nav-link flex items-center gap-1 text-sm font-semibold uppercase tracking-wide cursor-pointer transition-colors ${
-                          location.startsWith("/services")
+                          isActive(getPath("services", language))
                             ? "text-[#F5A623] active"
                             : "text-gray-700 hover:text-[#F5A623]"
                         }`}
@@ -172,7 +173,7 @@ export default function Navbar() {
                     {servicesOpen && services.length > 0 && (
                       <div className="absolute top-full left-0 w-64 bg-white shadow-xl border border-gray-100 rounded-md py-2 z-50">
                         {services.map((s) => (
-                          <Link key={s.id} href={`/services/${s.slug}`}>
+                          <Link key={s.id} href={getServicePath(s.slug, language)}>
                             <div className="px-4 py-2.5 text-sm text-gray-700 hover:text-[#F5A623] hover:bg-orange-50 cursor-pointer transition-colors">
                               {language === "tr" && s.titleTr ? s.titleTr : language === "ru" && s.titleRu ? s.titleRu : s.title}
                             </div>
@@ -314,13 +315,13 @@ export default function Navbar() {
                     </button>
                     {mobileServicesOpen && (
                       <div className="ml-4 mt-1 space-y-1">
-                        <Link href="/services">
+                        <Link href={getPath("services", language)}>
                           <div className="py-2 px-3 text-sm text-gray-600 hover:text-[#F5A623] cursor-pointer">
                             {t.services.title}
                           </div>
                         </Link>
                         {services.map((s) => (
-                          <Link key={s.id} href={`/services/${s.slug}`}>
+                          <Link key={s.id} href={getServicePath(s.slug, language)}>
                             <div className="py-2 px-3 text-sm text-gray-600 hover:text-[#F5A623] cursor-pointer transition-colors">
                               {language === "tr" && s.titleTr ? s.titleTr : language === "ru" && s.titleRu ? s.titleRu : s.title}
                             </div>

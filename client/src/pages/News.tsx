@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/lib/languageContext";
 import { useTranslation } from "@/lib/i18n";
 import { updateSEO, getSEOData } from "@/lib/seo";
+import { getNewsPath } from "@/lib/routes";
 import type { NewsItem } from "@shared/schema";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
@@ -45,7 +46,7 @@ export default function News() {
                 const excerpt = language === "tr" && item.excerptTr ? item.excerptTr :
                                 language === "ru" && item.excerptRu ? item.excerptRu : item.excerpt;
                 return (
-                  <Link key={item.id} href={`/news/${item.slug}`}>
+                  <Link key={item.id} href={getNewsPath(item.slug, language)}>
                     <div
                       className="service-card-hover bg-white rounded-lg overflow-hidden border border-gray-100 shadow-sm group cursor-pointer h-full flex flex-col"
                       data-testid={`card-news-${item.id}`}

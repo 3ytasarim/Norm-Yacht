@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/lib/languageContext";
 import { useTranslation } from "@/lib/i18n";
 import { updateSEO } from "@/lib/seo";
+import { getPath } from "@/lib/routes";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -28,7 +29,10 @@ type ProjectWithImages = {
 };
 
 export default function ProjectDetail() {
-  const [, params] = useRoute("/projects/:slug");
+  const [, paramsEn] = useRoute("/projects/:slug");
+  const [, paramsTr] = useRoute("/projeler/:slug");
+  const [, paramsRu] = useRoute("/proekty/:slug");
+  const params = paramsEn || paramsTr || paramsRu;
   const { language } = useLanguage();
   const t = useTranslation(language);
   const [mainImgIndex, setMainImgIndex] = useState(0);
@@ -82,7 +86,7 @@ export default function ProjectDetail() {
     return (
       <div className="max-w-7xl mx-auto px-4 py-24 text-center">
         <h2 className="text-2xl font-bold text-gray-900 mb-4">{t.projects.notFound}</h2>
-        <Link href="/projects">
+        <Link href={getPath("projects", language)}>
           <Button variant="outline">{t.projects.backToProjects}</Button>
         </Link>
       </div>
@@ -98,7 +102,7 @@ export default function ProjectDetail() {
     <div>
       <div className="bg-[#0a1428] text-white py-16">
         <div className="max-w-7xl mx-auto px-4">
-          <Link href="/projects">
+          <Link href={getPath("projects", language)}>
             <span className="inline-flex items-center gap-2 text-gray-400 hover:text-[#F5A623] mb-6 cursor-pointer transition-colors text-sm font-semibold">
               <ArrowLeft className="w-4 h-4" />
               {t.projects.backToProjects}
@@ -216,7 +220,7 @@ export default function ProjectDetail() {
                   </div>
                 </div>
                 <div className="mt-6 pt-6 border-t border-gray-200">
-                  <Link href="/contact">
+                  <Link href={getPath("contact", language)}>
                     <Button className="w-full bg-[#F5A623] hover:bg-[#e8901a] text-white font-bold">
                       {t.projects.discussProject}
                     </Button>

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { updateSEO, getSEOData } from "@/lib/seo";
 import { Link } from "wouter";
+import { getPath, getServicePath, getProjectPath, getNewsPath } from "@/lib/routes";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/lib/languageContext";
 import { useTranslation } from "@/lib/i18n";
@@ -63,7 +64,7 @@ function HeroSlider() {
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight max-w-2xl mb-6">
             {t.home.heroTitle}
           </h1>
-          <Link href="/services">
+          <Link href={getPath("services", language)}>
             <Button size="lg" className="bg-[#F5A623] hover:bg-[#e8901a] text-white font-bold px-8 group">
               {t.home.heroCta}
               <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -223,7 +224,7 @@ function AboutSection() {
             <p className="text-gray-600 leading-relaxed mb-6">
               {t.home.aboutText2}
             </p>
-            <Link href="/about">
+            <Link href={getPath("about", language)}>
               <Button className="bg-[#F5A623] hover:bg-[#e8901a] text-white font-bold group">
                 {t.home.learnMore}
                 <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -273,7 +274,7 @@ function ServicesSection() {
               const description = language === "tr" && service.descriptionTr ? service.descriptionTr :
                                   language === "ru" && service.descriptionRu ? service.descriptionRu : service.description;
               return (
-                <Link key={service.id} href={`/services/${service.slug}`}>
+                <Link key={service.id} href={getServicePath(service.slug, language)}>
                   <div className="service-card-hover bg-white rounded-lg overflow-hidden border border-gray-100 shadow-sm cursor-pointer group" data-testid={`card-service-${service.id}`}>
                     <div className="relative w-full h-96 overflow-hidden">
                       <img
@@ -298,7 +299,7 @@ function ServicesSection() {
         )}
 
         <div className="text-center mt-10">
-          <Link href="/services">
+          <Link href={getPath("services", language)}>
             <Button variant="outline" className="border-[#F5A623] text-[#F5A623] font-bold group">
               {t.home.viewAll} <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Button>
@@ -337,7 +338,7 @@ function ProjectsSection() {
               const description = language === "tr" && project.descriptionTr ? project.descriptionTr :
                                   language === "ru" && project.descriptionRu ? project.descriptionRu : project.description;
               return (
-                <Link key={project.id} href={`/projects/${project.slug}`}>
+                <Link key={project.id} href={getProjectPath(project.slug, language)}>
                   <div className="service-card-hover rounded-lg overflow-hidden border border-gray-100 shadow-sm group cursor-pointer" data-testid={`card-project-${project.id}`}>
                     <div className="relative h-52 overflow-hidden">
                       {project.mainImage ? (
@@ -373,7 +374,7 @@ function ProjectsSection() {
         )}
 
         <div className="text-center mt-10">
-          <Link href="/projects">
+          <Link href={getPath("projects", language)}>
             <Button variant="outline" className="border-[#F5A623] text-[#F5A623] font-bold group">
               {t.home.viewAll} <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Button>
@@ -412,7 +413,7 @@ function NewsSection() {
               const excerpt = language === "tr" && item.excerptTr ? item.excerptTr :
                               language === "ru" && item.excerptRu ? item.excerptRu : item.excerpt;
               return (
-                <Link key={item.id} href={`/news/${item.slug}`}>
+                <Link key={item.id} href={getNewsPath(item.slug, language)}>
                   <div className="service-card-hover rounded-lg overflow-hidden bg-white border border-gray-100 shadow-sm group cursor-pointer" data-testid={`card-news-${item.id}`}>
                     <div className="relative h-48 overflow-hidden">
                       {item.image ? (
@@ -448,7 +449,7 @@ function NewsSection() {
         )}
 
         <div className="text-center mt-10">
-          <Link href="/news">
+          <Link href={getPath("news", language)}>
             <Button variant="outline" className="border-[#F5A623] text-[#F5A623] font-bold group">
               {t.home.viewAll} <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Button>
@@ -472,7 +473,7 @@ function ContactCta() {
         <div className="text-[#F5A623] font-bold text-sm uppercase tracking-widest mb-4">{t.home.contactCtaLabel}</div>
         <h2 className="text-3xl md:text-4xl font-black text-white mb-4">{t.home.contactCta}</h2>
         <p className="text-gray-400 text-lg mb-10 max-w-xl mx-auto">{t.home.contactCtaText}</p>
-        <Link href="/contact">
+        <Link href={getPath("contact", language)}>
           <Button size="lg" className="bg-[#F5A623] hover:bg-[#e8901a] text-white font-bold px-10 group">
             {t.home.contactBtn}
             <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />

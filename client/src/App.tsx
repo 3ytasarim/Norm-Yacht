@@ -40,14 +40,39 @@ function Router() {
     <Layout>
       <Switch>
         <Route path="/" component={Home} />
+
         <Route path="/about" component={About} />
+        <Route path="/hakkimizda" component={About} />
+        <Route path="/o-nas" component={About} />
+
         <Route path="/services" component={Services} />
+        <Route path="/hizmetler" component={Services} />
+        <Route path="/uslugi" component={Services} />
+
         <Route path="/services/:slug" component={ServiceDetail} />
+        <Route path="/hizmetler/:slug" component={ServiceDetail} />
+        <Route path="/uslugi/:slug" component={ServiceDetail} />
+
         <Route path="/projects" component={Projects} />
+        <Route path="/projeler" component={Projects} />
+        <Route path="/proekty" component={Projects} />
+
         <Route path="/projects/:slug" component={ProjectDetail} />
+        <Route path="/projeler/:slug" component={ProjectDetail} />
+        <Route path="/proekty/:slug" component={ProjectDetail} />
+
         <Route path="/news" component={News} />
+        <Route path="/haberler" component={News} />
+        <Route path="/novosti" component={News} />
+
         <Route path="/news/:slug" component={NewsDetail} />
+        <Route path="/haberler/:slug" component={NewsDetail} />
+        <Route path="/novosti/:slug" component={NewsDetail} />
+
         <Route path="/contact" component={Contact} />
+        <Route path="/iletisim" component={Contact} />
+        <Route path="/kontakty" component={Contact} />
+
         <Route path="/admin" component={AdminLogin} />
         <Route path="/admin/dashboard" component={AdminDashboard} />
         <Route component={NotFound} />

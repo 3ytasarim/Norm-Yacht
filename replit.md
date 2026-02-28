@@ -16,6 +16,11 @@ Full-featured multilingual corporate website for Norm Yat, a marine engineering 
 - Translations: `useTranslation(language)` from `@/lib/i18n`
 - All UI strings are translated: labels, headings, descriptions, form validation, toasts, status badges, error messages, date formatting
 - Date locale adapts per language (en-GB, tr-TR, ru-RU)
+- Localized URL routing via `@/lib/routes.ts`:
+  - EN: /about, /services, /projects, /news, /contact
+  - TR: /hakkimizda, /hizmetler, /projeler, /haberler, /iletisim
+  - RU: /o-nas, /uslugi, /proekty, /novosti, /kontakty
+- URL auto-updates on language switch; direct URL access auto-detects language
 
 ## Architecture
 - **Frontend**: React + TypeScript + Vite at `client/`

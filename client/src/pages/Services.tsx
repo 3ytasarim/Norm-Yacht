@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/lib/languageContext";
 import { useTranslation } from "@/lib/i18n";
 import { updateSEO, getSEOData } from "@/lib/seo";
+import { getPath, getServicePath } from "@/lib/routes";
 import type { Service } from "@shared/schema";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowRight } from "lucide-react";
@@ -47,7 +48,7 @@ export default function Services() {
                 const description = language === "tr" && service.descriptionTr ? service.descriptionTr :
                                     language === "ru" && service.descriptionRu ? service.descriptionRu : service.description;
                 return (
-                  <Link key={service.id} href={`/services/${service.slug}`}>
+                  <Link key={service.id} href={getServicePath(service.slug, language)}>
                     <div
                       className="service-card-hover bg-white rounded-lg overflow-hidden border border-gray-100 shadow-sm cursor-pointer group h-full flex flex-col"
                       data-testid={`card-service-${service.id}`}
@@ -84,7 +85,7 @@ export default function Services() {
           <p className="text-gray-600 mb-8 max-w-xl mx-auto">
             {t.services.customSolutionText}
           </p>
-          <Link href="/contact">
+          <Link href={getPath("contact", language)}>
             <button className="bg-[#F5A623] hover:bg-[#e8901a] text-white font-bold px-8 py-3 rounded-md inline-flex items-center gap-2 transition-colors">
               {t.home.contactBtn} <ArrowRight className="w-4 h-4" />
             </button>

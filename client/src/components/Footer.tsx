@@ -1,6 +1,7 @@
 import { Link } from "wouter";
 import { useLanguage } from "@/lib/languageContext";
 import { useTranslation } from "@/lib/i18n";
+import { getPath, getServicePath } from "@/lib/routes";
 import { useQuery } from "@tanstack/react-query";
 import type { Service } from "@shared/schema";
 import logoWhitePath from "@assets/logo-white.png";
@@ -63,10 +64,10 @@ export default function Footer() {
             <ul className="space-y-2.5">
               {[
                 { href: "/", label: t.nav.home },
-                { href: "/about", label: t.nav.about },
-                { href: "/projects", label: t.nav.projects },
-                { href: "/news", label: t.nav.news },
-                { href: "/contact", label: t.nav.contact },
+                { href: getPath("about", language), label: t.nav.about },
+                { href: getPath("projects", language), label: t.nav.projects },
+                { href: getPath("news", language), label: t.nav.news },
+                { href: getPath("contact", language), label: t.nav.contact },
               ].map((link) => (
                 <li key={link.href}>
                   <Link href={link.href}>
@@ -86,7 +87,7 @@ export default function Footer() {
             <ul className="space-y-2.5">
               {topServices.map((s) => (
                 <li key={s.id}>
-                  <Link href={`/services/${s.slug}`}>
+                  <Link href={getServicePath(s.slug, language)}>
                     <span className="text-gray-400 hover:text-[#F5A623] text-sm transition-colors cursor-pointer flex items-center gap-2">
                       <span className="w-1.5 h-1.5 bg-[#F5A623] rounded-full flex-shrink-0" />
                       {language === "tr" && s.titleTr ? s.titleTr : language === "ru" && s.titleRu ? s.titleRu : s.title}

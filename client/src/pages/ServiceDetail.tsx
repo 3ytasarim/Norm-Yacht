@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/lib/languageContext";
 import { useTranslation } from "@/lib/i18n";
 import { updateSEO } from "@/lib/seo";
+import { getPath } from "@/lib/routes";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft, ChevronLeft, ChevronRight, Wrench, Waves, Navigation, Settings, Activity, Gauge, Hammer, Zap, Cog, Anchor, ZoomIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -29,7 +30,10 @@ type ServiceWithImages = {
 };
 
 export default function ServiceDetail() {
-  const [, params] = useRoute("/services/:slug");
+  const [, paramsEn] = useRoute("/services/:slug");
+  const [, paramsTr] = useRoute("/hizmetler/:slug");
+  const [, paramsRu] = useRoute("/uslugi/:slug");
+  const params = paramsEn || paramsTr || paramsRu;
   const { language } = useLanguage();
   const t = useTranslation(language);
   const [imgIndex, setImgIndex] = useState(0);
@@ -81,7 +85,7 @@ export default function ServiceDetail() {
     return (
       <div className="max-w-7xl mx-auto px-4 py-24 text-center">
         <h2 className="text-2xl font-bold text-gray-900 mb-4">{t.services.notFound}</h2>
-        <Link href="/services">
+        <Link href={getPath("services", language)}>
           <Button variant="outline">{t.services.backToServices}</Button>
         </Link>
       </div>
@@ -98,7 +102,7 @@ export default function ServiceDetail() {
     <div>
       <div className="bg-[#0a1428] text-white py-16">
         <div className="max-w-7xl mx-auto px-4">
-          <Link href="/services">
+          <Link href={getPath("services", language)}>
             <span className="inline-flex items-center gap-2 text-gray-400 hover:text-[#F5A623] mb-6 cursor-pointer transition-colors text-sm font-semibold">
               <ArrowLeft className="w-4 h-4" />
               {t.services.title}
@@ -173,7 +177,7 @@ export default function ServiceDetail() {
                 <p className="text-gray-600 text-sm mb-6 leading-relaxed">
                   {t.services.needServiceText}
                 </p>
-                <Link href="/contact">
+                <Link href={getPath("contact", language)}>
                   <Button className="w-full bg-[#F5A623] hover:bg-[#e8901a] text-white font-bold" data-testid="button-contact-cta">
                     {t.home.contactBtn}
                   </Button>

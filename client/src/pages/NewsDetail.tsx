@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/lib/languageContext";
 import { useTranslation } from "@/lib/i18n";
 import { updateSEO } from "@/lib/seo";
+import { getPath } from "@/lib/routes";
 import type { NewsItem } from "@shared/schema";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
@@ -11,7 +12,10 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Calendar, User, Tag } from "lucide-react";
 
 export default function NewsDetail() {
-  const [, params] = useRoute("/news/:slug");
+  const [, paramsEn] = useRoute("/news/:slug");
+  const [, paramsTr] = useRoute("/haberler/:slug");
+  const [, paramsRu] = useRoute("/novosti/:slug");
+  const params = paramsEn || paramsTr || paramsRu;
   const { language } = useLanguage();
   const t = useTranslation(language);
 
@@ -49,7 +53,7 @@ export default function NewsDetail() {
     return (
       <div className="max-w-7xl mx-auto px-4 py-24 text-center">
         <h2 className="text-2xl font-bold text-gray-900 mb-4">{t.news.notFound}</h2>
-        <Link href="/news">
+        <Link href={getPath("news", language)}>
           <Button variant="outline">{t.news.backToNews}</Button>
         </Link>
       </div>
@@ -74,7 +78,7 @@ export default function NewsDetail() {
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/10" />
         <div className="absolute bottom-0 left-0 right-0 p-8">
           <div className="max-w-4xl mx-auto">
-            <Link href="/news">
+            <Link href={getPath("news", language)}>
               <span className="inline-flex items-center gap-2 text-white/70 hover:text-[#F5A623] mb-4 cursor-pointer transition-colors text-sm font-semibold">
                 <ArrowLeft className="w-4 h-4" />
                 {t.news.backToNews}
@@ -116,7 +120,7 @@ export default function NewsDetail() {
           />
 
           <div className="mt-12 pt-8 border-t border-gray-100">
-            <Link href="/news">
+            <Link href={getPath("news", language)}>
               <Button variant="outline" className="border-[#F5A623] text-[#F5A623] font-bold group">
                 <ArrowLeft className="mr-2 w-4 h-4 group-hover:-translate-x-1 transition-transform" />
                 {t.news.backToNews}

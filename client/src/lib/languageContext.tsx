@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import type { Language } from "./i18n";
+import { getEquivalentPath, detectLanguageFromPath } from "./routes";
 
 interface LanguageContextType {
   language: Language;
@@ -13,6 +14,11 @@ const LanguageContext = createContext<LanguageContextType>({
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [language, setLanguageState] = useState<Language>(() => {
+    const pathLang = detectLanguageFromPath(window.location.pathname);
+    if (pathLang) {
+      localStorage.setItem("norm-yacht-lang", pathLang);
+      return pathLang;
+    }
     const stored = localStorage.getItem("norm-yacht-lang");
     return (stored as Language) || "en";
   });
@@ -24,6 +30,12 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
     localStorage.setItem("norm-yacht-lang", lang);
+    const currentPath = window.location.pathname;
+    const newPath = getEquivalentPath(currentPath, lang);
+    if (newPath !== currentPath) {
+      window.history.replaceState(null, "", newPath);
+      window.dispatchEvent(new PopStateEvent("popstate"));
+    }
   };
 
   return (

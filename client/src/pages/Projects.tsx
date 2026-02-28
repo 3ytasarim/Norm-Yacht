@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/lib/languageContext";
 import { useTranslation } from "@/lib/i18n";
 import { updateSEO, getSEOData } from "@/lib/seo";
+import { getProjectPath } from "@/lib/routes";
 import type { Project } from "@shared/schema";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
@@ -22,7 +23,7 @@ function ProjectCard({ project, t, language }: { project: Project; t: any; langu
                       language === "ru" && project.descriptionRu ? project.descriptionRu : project.description;
 
   return (
-    <Link href={`/projects/${project.slug}`}>
+    <Link href={getProjectPath(project.slug, language as any)}>
       <div
         className="service-card-hover bg-white rounded-lg overflow-hidden border border-gray-100 shadow-sm group cursor-pointer"
         data-testid={`card-project-${project.id}`}
