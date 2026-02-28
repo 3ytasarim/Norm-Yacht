@@ -193,7 +193,7 @@ function AboutSection() {
   return (
     <section className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center mb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
           <div>
             <div className="text-[#F5A623] font-bold text-sm uppercase tracking-widest mb-3">About Us</div>
             <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-6 leading-tight">
@@ -212,29 +212,14 @@ function AboutSection() {
               </Button>
             </Link>
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            {[
-              { value: "2019", label: t.about?.stats?.founded || "Founded" },
-              { value: "100+", label: t.about?.stats?.projects || "Projects" },
-              { value: "5+", label: t.about?.stats?.experience || "Years Experience" },
-              { value: "50+", label: t.about?.stats?.clients || "Clients" },
-            ].map((stat, i) => (
-              <div key={i} className="bg-gray-50 border border-gray-100 rounded-lg p-6 text-center">
-                <div className="text-3xl font-black text-[#F5A623] mb-1">{stat.value}</div>
-                <div className="text-sm text-gray-600 font-medium">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="relative rounded-2xl overflow-hidden shadow-xl">
-          <img
-            src={workshopImage}
-            alt="Norm Yacht workshop - Tuzla, Istanbul"
-            className="w-full h-auto"
-          />
-          <div className="absolute bottom-6 left-6 bg-[#F5A623] text-white px-6 py-4 rounded-lg shadow-xl">
-            <div className="text-3xl font-black">2019</div>
-            <div className="text-sm font-semibold mt-1">Since Tuzla, Istanbul</div>
+          <div className="relative">
+            <div className="rounded-2xl overflow-hidden shadow-xl">
+              <img
+                src={aboutYachtImage}
+                alt="Norm Yacht - Since 2019 Tuzla, Istanbul"
+                className="w-full h-auto"
+              />
+            </div>
           </div>
         </div>
       </div>
