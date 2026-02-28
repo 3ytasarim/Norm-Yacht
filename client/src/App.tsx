@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { LanguageProvider } from "@/lib/languageContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import FloatingCTA from "@/components/FloatingCTA";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import About from "@/pages/About";
@@ -29,6 +30,7 @@ function Layout({ children }: { children: React.ReactNode }) {
       <Navbar />
       <main className="flex-1">{children}</main>
       <Footer />
+      <FloatingCTA />
     </div>
   );
 }
