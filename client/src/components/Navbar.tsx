@@ -138,10 +138,10 @@ export default function Navbar() {
 
       {/* Main Nav */}
       <nav
-        className={`sticky top-0 z-50 transition-all duration-300 ${
+        className={`sticky top-0 z-50 transition-all duration-300 bg-white ${
           scrolled
-            ? "bg-white/98 backdrop-blur-md shadow-md border-b border-gray-100"
-            : "bg-white shadow-sm border-b border-gray-100"
+            ? "shadow-md border-b border-gray-100"
+            : "shadow-sm border-b border-gray-100"
         }`}
       >
         <div className="max-w-7xl mx-auto px-4">
