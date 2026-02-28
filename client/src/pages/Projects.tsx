@@ -9,6 +9,11 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowRight, Calendar, User, Tag } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
+function stripHtml(html: string | null | undefined): string {
+  if (!html) return "";
+  return html.replace(/<[^>]*>/g, "").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").trim();
+}
+
 function ProjectCard({ project, t, language }: { project: Project; t: any; language: string }) {
   const title = language === "tr" && project.titleTr ? project.titleTr :
                language === "ru" && project.titleRu ? project.titleRu : project.title;
@@ -43,7 +48,7 @@ function ProjectCard({ project, t, language }: { project: Project; t: any; langu
         {/* Content */}
         <div className="p-5">
           <h3 className="font-bold text-gray-900 text-base mb-3 group-hover:text-[#F5A623] transition-colors line-clamp-2">{title}</h3>
-          <p className="text-gray-600 text-sm mb-4 line-clamp-2 leading-relaxed">{description}</p>
+          <p className="text-gray-600 text-sm mb-4 line-clamp-2 leading-relaxed">{stripHtml(description)}</p>
 
           <div className="space-y-2 mb-4">
             {project.category && (

@@ -7,6 +7,11 @@ import type { Service } from "@shared/schema";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowRight } from "lucide-react";
 
+function stripHtml(html: string | null | undefined): string {
+  if (!html) return "";
+  return html.replace(/<[^>]*>/g, "").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").trim();
+}
+
 export default function Services() {
   const { language } = useLanguage();
   const t = useTranslation(language);
@@ -56,7 +61,7 @@ export default function Services() {
                       </div>
                       <div className="p-6 flex flex-col flex-1">
                         <h3 className="font-bold text-gray-900 text-lg mb-3 group-hover:text-[#F5A623] transition-colors">{title}</h3>
-                        <p className="text-gray-600 text-sm leading-relaxed flex-1 line-clamp-3">{description}</p>
+                        <p className="text-gray-600 text-sm leading-relaxed flex-1 line-clamp-3">{stripHtml(description)}</p>
                         <div className="mt-5 flex items-center text-[#F5A623] text-sm font-semibold border-t border-gray-100 pt-4">
                           {t.services.viewDetail}
                           <ArrowRight className="ml-1.5 w-4 h-4 group-hover:translate-x-1 transition-transform" />

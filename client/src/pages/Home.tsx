@@ -9,6 +9,11 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { ChevronLeft, ChevronRight, ArrowRight, Anchor, Waves, Award, Users, Calendar, Wrench, Navigation, Settings, Activity, Gauge, Hammer, Zap, Cog } from "lucide-react";
 import aboutImage from "@assets/about_1772246089936.jpg";
+
+function stripHtml(html: string | null | undefined): string {
+  if (!html) return "";
+  return html.replace(/<[^>]*>/g, "").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").trim();
+}
 import { Skeleton } from "@/components/ui/skeleton";
 
 const iconMap: Record<string, any> = {
@@ -266,7 +271,7 @@ function ServicesSection() {
                     </div>
                     <div className="p-6">
                       <h3 className="font-bold text-gray-900 text-lg mb-2 group-hover:text-[#F5A623] transition-colors">{title}</h3>
-                      <p className="text-gray-600 text-sm leading-relaxed line-clamp-2">{description}</p>
+                      <p className="text-gray-600 text-sm leading-relaxed line-clamp-2">{stripHtml(description)}</p>
                       <div className="mt-4 flex items-center text-[#F5A623] text-sm font-semibold">
                         {t.services.viewDetail} <ArrowRight className="ml-1.5 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                       </div>

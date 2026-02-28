@@ -55,15 +55,32 @@ export default function RichTextEditor({ value, onChange, label, testId }: RichT
     }
   }, [onChange]);
 
+  const cleanPastedHtml = useCallback((html: string): string => {
+    let clean = html
+      .replace(/<!--\s*Start\s*Fragment\s*-->/gi, "")
+      .replace(/<!--\s*End\s*Fragment\s*-->/gi, "")
+      .replace(/<!--[\s\S]*?-->/g, "")
+      .replace(/ data-[a-z-]+="[^"]*"/gi, "")
+      .replace(/ class="[^"]*"/gi, "")
+      .replace(/ style="[^"]*"/gi, "")
+      .replace(/<meta[^>]*>/gi, "")
+      .replace(/<\/?span[^>]*>/gi, "")
+      .replace(/<\/?div[^>]*>/gi, "")
+      .replace(/<\/?font[^>]*>/gi, "");
+    return clean;
+  }, []);
+
   const handlePaste = useCallback((e: React.ClipboardEvent) => {
     e.preventDefault();
-    const text = e.clipboardData.getData("text/html") || e.clipboardData.getData("text/plain");
-    document.execCommand("insertHTML", false, text);
+    const html = e.clipboardData.getData("text/html");
+    const plain = e.clipboardData.getData("text/plain");
+    const content = html ? cleanPastedHtml(html) : plain;
+    document.execCommand("insertHTML", false, content);
     if (editorRef.current) {
       isInternalChange.current = true;
       onChange(editorRef.current.innerHTML);
     }
-  }, [onChange]);
+  }, [onChange, cleanPastedHtml]);
 
   return (
     <div>
