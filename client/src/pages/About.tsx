@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useLanguage } from "@/lib/languageContext";
 import { useTranslation } from "@/lib/i18n";
 import { CheckCircle, Target, Eye } from "lucide-react";
-import workshopImage from "@assets/image_1772245774774.png";
+import aboutImage from "@assets/about_1772246089936.jpg";
 
 export default function About() {
   const { language } = useLanguage();
@@ -77,7 +77,7 @@ export default function About() {
             <div className="space-y-6">
               <div className="rounded-lg overflow-hidden shadow-lg">
                 <img
-                  src={workshopImage}
+                  src={aboutImage}
                   alt="Norm Yacht workshop - Tuzla, Istanbul"
                   className="w-full h-auto"
                 />

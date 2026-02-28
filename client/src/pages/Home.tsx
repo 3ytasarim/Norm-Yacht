@@ -8,8 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { ChevronLeft, ChevronRight, ArrowRight, Anchor, Waves, Award, Users, Calendar, Wrench, Navigation, Settings, Activity, Gauge, Hammer, Zap, Cog } from "lucide-react";
-import aboutYachtImage from "@assets/image_1772245620349.png";
-import workshopImage from "@assets/image_1772245774774.png";
+import aboutImage from "@assets/about_1772246089936.jpg";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const iconMap: Record<string, any> = {
@@ -215,7 +214,7 @@ function AboutSection() {
           <div className="relative">
             <div className="rounded-2xl overflow-hidden shadow-xl">
               <img
-                src={aboutYachtImage}
+                src={aboutImage}
                 alt="Norm Yacht - Since 2019 Tuzla, Istanbul"
                 className="w-full h-auto"
               />
