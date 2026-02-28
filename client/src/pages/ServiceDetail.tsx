@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Link, useRoute } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/lib/languageContext";
@@ -31,11 +31,24 @@ export default function ServiceDetail() {
   const { language } = useLanguage();
   const t = useTranslation(language);
   const [imgIndex, setImgIndex] = useState(0);
+  const autoRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const { data: service, isLoading, isError } = useQuery<ServiceWithImages>({
     queryKey: ["/api/services", params?.slug],
     enabled: !!params?.slug,
   });
+
+  const imageCount = service?.images?.length || 0;
+
+  useEffect(() => {
+    if (imageCount <= 1) return;
+    autoRef.current = setInterval(() => {
+      setImgIndex((p) => (p + 1) % imageCount);
+    }, 4000);
+    return () => { if (autoRef.current) clearInterval(autoRef.current); };
+  }, [imageCount]);
+
+  const stopAuto = () => { if (autoRef.current) clearInterval(autoRef.current); };
 
   useEffect(() => {
     if (service) {
@@ -118,14 +131,14 @@ export default function ServiceDetail() {
                     {service.images.length > 1 && (
                       <>
                         <button
-                          onClick={() => setImgIndex((prev) => (prev - 1 + service.images.length) % service.images.length)}
+                          onClick={() => { stopAuto(); setImgIndex((prev) => (prev - 1 + service.images.length) % service.images.length); }}
                           className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/40 hover:bg-[#F5A623] flex items-center justify-center text-white transition-colors"
                           data-testid="button-gallery-prev"
                         >
                           <ChevronLeft className="w-5 h-5" />
                         </button>
                         <button
-                          onClick={() => setImgIndex((prev) => (prev + 1) % service.images.length)}
+                          onClick={() => { stopAuto(); setImgIndex((prev) => (prev + 1) % service.images.length); }}
                           className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/40 hover:bg-[#F5A623] flex items-center justify-center text-white transition-colors"
                           data-testid="button-gallery-next"
                         >
@@ -140,7 +153,7 @@ export default function ServiceDetail() {
                       {service.images.map((img, i) => (
                         <button
                           key={img.id}
-                          onClick={() => setImgIndex(i)}
+                          onClick={() => { stopAuto(); setImgIndex(i); }}
                           className={`w-20 h-16 rounded-md overflow-hidden border-2 transition-all ${i === imgIndex ? "border-[#F5A623]" : "border-transparent opacity-70 hover:opacity-100"}`}
                           data-testid={`button-thumbnail-${i}`}
                         >
