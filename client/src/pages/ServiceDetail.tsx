@@ -122,11 +122,11 @@ export default function ServiceDetail() {
                 <div className="mt-10">
                   <h3 className="text-xl font-black text-gray-900 mb-5">Gallery</h3>
                   {/* Main image */}
-                  <div className="relative rounded-lg overflow-hidden aspect-video mb-4">
+                  <div className="relative rounded-lg overflow-hidden bg-gray-100 mb-4 flex items-center justify-center" style={{ minHeight: "400px" }}>
                     <img
                       src={service.images[imgIndex]?.imageUrl}
                       alt={`${title} ${imgIndex + 1}`}
-                      className="w-full h-full object-cover"
+                      className="max-w-full max-h-[600px] w-auto h-auto object-contain"
                     />
                     {service.images.length > 1 && (
                       <>
