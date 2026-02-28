@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useLanguage } from "@/lib/languageContext";
 import { useTranslation } from "@/lib/i18n";
 import { CheckCircle, Target, Eye } from "lucide-react";
+import workshopImage from "@assets/WhatsApp_Image_2026-02-20_at_20.06.28_(6)_1772245638743.jpeg";
 
 export default function About() {
   const { language } = useLanguage();
@@ -76,8 +77,8 @@ export default function About() {
             <div className="space-y-6">
               <div className="aspect-video rounded-lg overflow-hidden shadow-lg">
                 <img
-                  src="https://images.unsplash.com/photo-1504598318550-17eba1008a68?w=700&h=500&fit=crop"
-                  alt="Norm Yacht engineering team"
+                  src={workshopImage}
+                  alt="Norm Yacht workshop - Tuzla, Istanbul"
                   className="w-full h-full object-cover"
                 />
               </div>

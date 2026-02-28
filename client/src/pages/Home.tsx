@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { ChevronLeft, ChevronRight, ArrowRight, Anchor, Waves, Award, Users, Calendar, Wrench, Navigation, Settings, Activity, Gauge, Hammer, Zap, Cog } from "lucide-react";
+import aboutYachtImage from "@assets/image_1772245620349.png";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const iconMap: Record<string, any> = {
@@ -211,16 +212,12 @@ function AboutSection() {
             </Link>
           </div>
           <div className="relative">
-            <div className="aspect-video rounded-lg overflow-hidden shadow-xl">
+            <div className="rounded-2xl overflow-hidden shadow-xl">
               <img
-                src="https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=700&h=500&fit=crop"
-                alt="Norm Yacht operations"
-                className="w-full h-full object-cover"
+                src={aboutYachtImage}
+                alt="Norm Yacht - Since 2019 Tuzla, Istanbul"
+                className="w-full h-auto object-cover"
               />
-            </div>
-            <div className="absolute -bottom-6 -left-6 bg-[#F5A623] text-white p-6 rounded-lg shadow-xl">
-              <div className="text-3xl font-black">2019</div>
-              <div className="text-sm font-semibold mt-1">Since Tuzla, Istanbul</div>
             </div>
           </div>
         </div>
