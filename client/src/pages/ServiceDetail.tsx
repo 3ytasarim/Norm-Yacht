@@ -4,8 +4,9 @@ import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/lib/languageContext";
 import { useTranslation } from "@/lib/i18n";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowLeft, ChevronLeft, ChevronRight, Wrench, Waves, Navigation, Settings, Activity, Gauge, Hammer, Zap, Cog, Anchor } from "lucide-react";
+import { ArrowLeft, ChevronLeft, ChevronRight, Wrench, Waves, Navigation, Settings, Activity, Gauge, Hammer, Zap, Cog, Anchor, ZoomIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import ImageLightbox from "@/components/ImageLightbox";
 
 const iconMap: Record<string, any> = {
   Waves, Anchor, Navigation, Settings, Activity, Gauge, Hammer, Zap, Cog, Wrench, Crane: Anchor,
@@ -31,6 +32,7 @@ export default function ServiceDetail() {
   const { language } = useLanguage();
   const t = useTranslation(language);
   const [imgIndex, setImgIndex] = useState(0);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
   const autoRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const { data: service, isLoading, isError } = useQuery<ServiceWithImages>({
@@ -122,24 +124,27 @@ export default function ServiceDetail() {
                 <div className="mt-10">
                   <h3 className="text-xl font-black text-gray-900 mb-5">Gallery</h3>
                   {/* Main image */}
-                  <div className="relative rounded-lg overflow-hidden bg-gray-100 mb-4" style={{ height: "500px" }}>
+                  <div className="relative rounded-lg overflow-hidden bg-gray-100 mb-4 group cursor-pointer" style={{ height: "500px" }} onClick={() => { stopAuto(); setLightboxOpen(true); }}>
                     <img
                       src={service.images[imgIndex]?.imageUrl}
                       alt={`${title} ${imgIndex + 1}`}
                       className="w-full h-full object-contain"
                     />
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                      <ZoomIn className="w-10 h-10 text-white opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-lg" />
+                    </div>
                     {service.images.length > 1 && (
                       <>
                         <button
-                          onClick={() => { stopAuto(); setImgIndex((prev) => (prev - 1 + service.images.length) % service.images.length); }}
-                          className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/40 hover:bg-[#F5A623] flex items-center justify-center text-white transition-colors"
+                          onClick={(e) => { e.stopPropagation(); stopAuto(); setImgIndex((prev) => (prev - 1 + service.images.length) % service.images.length); }}
+                          className="absolute left-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-black/40 hover:bg-[#F5A623] flex items-center justify-center text-white transition-colors"
                           data-testid="button-gallery-prev"
                         >
                           <ChevronLeft className="w-5 h-5" />
                         </button>
                         <button
-                          onClick={() => { stopAuto(); setImgIndex((prev) => (prev + 1) % service.images.length); }}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/40 hover:bg-[#F5A623] flex items-center justify-center text-white transition-colors"
+                          onClick={(e) => { e.stopPropagation(); stopAuto(); setImgIndex((prev) => (prev + 1) % service.images.length); }}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-black/40 hover:bg-[#F5A623] flex items-center justify-center text-white transition-colors"
                           data-testid="button-gallery-next"
                         >
                           <ChevronRight className="w-5 h-5" />
@@ -197,6 +202,15 @@ export default function ServiceDetail() {
           </div>
         </div>
       </section>
+
+      {lightboxOpen && service?.images && service.images.length > 0 && (
+        <ImageLightbox
+          images={service.images}
+          currentIndex={imgIndex}
+          onClose={() => setLightboxOpen(false)}
+          onNavigate={(i) => setImgIndex(i)}
+        />
+      )}
     </div>
   );
 }

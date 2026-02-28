@@ -6,7 +6,8 @@ import { useTranslation } from "@/lib/i18n";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Calendar, User, Tag, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, Calendar, User, Tag, ChevronLeft, ChevronRight, ZoomIn } from "lucide-react";
+import ImageLightbox from "@/components/ImageLightbox";
 
 type ProjectWithImages = {
   id: number;
@@ -30,6 +31,7 @@ export default function ProjectDetail() {
   const { language } = useLanguage();
   const t = useTranslation(language);
   const [mainImgIndex, setMainImgIndex] = useState(0);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
   const autoRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const { data: project, isLoading, isError } = useQuery<ProjectWithImages>({
@@ -113,24 +115,27 @@ export default function ProjectDetail() {
               {/* Main image carousel */}
               {allImages.length > 0 && (
                 <div className="mb-6">
-                  <div className="relative rounded-lg overflow-hidden aspect-video">
+                  <div className="relative rounded-lg overflow-hidden bg-gray-100 group cursor-pointer" style={{ height: "500px" }} onClick={() => { if (autoRef.current) clearInterval(autoRef.current); setLightboxOpen(true); }}>
                     <img
                       src={allImages[mainImgIndex]?.imageUrl}
                       alt={title}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-contain"
                     />
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                      <ZoomIn className="w-10 h-10 text-white opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-lg" />
+                    </div>
                     {allImages.length > 1 && (
                       <>
                         <button
-                          onClick={() => { if (autoRef.current) clearInterval(autoRef.current); setMainImgIndex((p) => (p - 1 + allImages.length) % allImages.length); }}
-                          className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/40 hover:bg-[#F5A623] flex items-center justify-center text-white transition-colors"
+                          onClick={(e) => { e.stopPropagation(); if (autoRef.current) clearInterval(autoRef.current); setMainImgIndex((p) => (p - 1 + allImages.length) % allImages.length); }}
+                          className="absolute left-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-black/40 hover:bg-[#F5A623] flex items-center justify-center text-white transition-colors"
                           data-testid="button-img-prev"
                         >
                           <ChevronLeft className="w-5 h-5" />
                         </button>
                         <button
-                          onClick={() => { if (autoRef.current) clearInterval(autoRef.current); setMainImgIndex((p) => (p + 1) % allImages.length); }}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/40 hover:bg-[#F5A623] flex items-center justify-center text-white transition-colors"
+                          onClick={(e) => { e.stopPropagation(); if (autoRef.current) clearInterval(autoRef.current); setMainImgIndex((p) => (p + 1) % allImages.length); }}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-black/40 hover:bg-[#F5A623] flex items-center justify-center text-white transition-colors"
                           data-testid="button-img-next"
                         >
                           <ChevronRight className="w-5 h-5" />
@@ -220,6 +225,15 @@ export default function ProjectDetail() {
           </div>
         </div>
       </section>
+
+      {lightboxOpen && allImages.length > 0 && (
+        <ImageLightbox
+          images={allImages}
+          currentIndex={mainImgIndex}
+          onClose={() => setLightboxOpen(false)}
+          onNavigate={(i) => setMainImgIndex(i)}
+        />
+      )}
     </div>
   );
 }
