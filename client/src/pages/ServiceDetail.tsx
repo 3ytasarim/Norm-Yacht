@@ -3,6 +3,7 @@ import { Link, useRoute } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/lib/languageContext";
 import { useTranslation } from "@/lib/i18n";
+import { updateSEO } from "@/lib/seo";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft, ChevronLeft, ChevronRight, Wrench, Waves, Navigation, Settings, Activity, Gauge, Hammer, Zap, Cog, Anchor, ZoomIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -54,9 +55,14 @@ export default function ServiceDetail() {
 
   useEffect(() => {
     if (service) {
-      const title = language === "tr" && service.titleTr ? service.titleTr :
+      const seoTitle = language === "tr" && service.titleTr ? service.titleTr :
                     language === "ru" && service.titleRu ? service.titleRu : service.title;
-      document.title = `${title} - Norm Yacht Services`;
+      const desc = service.description?.replace(/<[^>]*>/g, "").substring(0, 160) || "";
+      updateSEO({
+        title: `${seoTitle} | Marine Engineering Services - Norm Yacht`,
+        description: desc,
+        keywords: `${seoTitle}, yacht ${seoTitle.toLowerCase()}, marine ${seoTitle.toLowerCase()}, superyacht service, Norm Yacht, Tuzla Istanbul`,
+      });
     }
   }, [service, language]);
 

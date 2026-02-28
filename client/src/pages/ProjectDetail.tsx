@@ -3,6 +3,7 @@ import { Link, useRoute } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/lib/languageContext";
 import { useTranslation } from "@/lib/i18n";
+import { updateSEO } from "@/lib/seo";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -54,9 +55,15 @@ export default function ProjectDetail() {
 
   useEffect(() => {
     if (project) {
-      const title = language === "tr" && project.titleTr ? project.titleTr :
+      const seoTitle = language === "tr" && project.titleTr ? project.titleTr :
                     language === "ru" && project.titleRu ? project.titleRu : project.title;
-      document.title = `${title} - Norm Yacht Projects`;
+      const desc = project.description?.replace(/<[^>]*>/g, "").substring(0, 160) || "";
+      updateSEO({
+        title: `${seoTitle} | Marine Engineering Project - Norm Yacht`,
+        description: desc,
+        keywords: `${seoTitle}, yacht project, marine engineering project, superyacht refit, Norm Yacht, Tuzla Istanbul`,
+        ogImage: project.mainImage || undefined,
+      });
     }
   }, [project, language]);
 

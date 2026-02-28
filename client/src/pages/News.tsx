@@ -3,6 +3,7 @@ import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/lib/languageContext";
 import { useTranslation } from "@/lib/i18n";
+import { updateSEO, SEO_DATA } from "@/lib/seo";
 import type { NewsItem } from "@shared/schema";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
@@ -14,7 +15,7 @@ export default function News() {
   const { data: newsItems = [], isLoading } = useQuery<NewsItem[]>({ queryKey: ["/api/news"] });
 
   useEffect(() => {
-    document.title = "News - Norm Yacht";
+    updateSEO(SEO_DATA.news);
   }, []);
 
   return (

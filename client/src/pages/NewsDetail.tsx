@@ -3,6 +3,7 @@ import { Link, useRoute } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/lib/languageContext";
 import { useTranslation } from "@/lib/i18n";
+import { updateSEO } from "@/lib/seo";
 import type { NewsItem } from "@shared/schema";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
@@ -21,9 +22,15 @@ export default function NewsDetail() {
 
   useEffect(() => {
     if (item) {
-      const title = language === "tr" && item.titleTr ? item.titleTr :
+      const seoTitle = language === "tr" && item.titleTr ? item.titleTr :
                     language === "ru" && item.titleRu ? item.titleRu : item.title;
-      document.title = `${title} - Norm Yacht News`;
+      const desc = item.content?.replace(/<[^>]*>/g, "").substring(0, 160) || item.excerpt || "";
+      updateSEO({
+        title: `${seoTitle} | Norm Yacht News`,
+        description: desc,
+        keywords: `${seoTitle}, marine engineering news, yacht industry, Norm Yacht, Tuzla Istanbul`,
+        ogImage: item.image || undefined,
+      });
     }
   }, [item, language]);
 

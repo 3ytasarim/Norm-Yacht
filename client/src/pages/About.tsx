@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useLanguage } from "@/lib/languageContext";
 import { useTranslation } from "@/lib/i18n";
+import { updateSEO, SEO_DATA } from "@/lib/seo";
 import { CheckCircle, Target, Eye } from "lucide-react";
 import aboutImage from "@assets/about_1772246089936.jpg";
 
@@ -9,7 +10,7 @@ export default function About() {
   const t = useTranslation(language);
 
   useEffect(() => {
-    document.title = "About Us - Norm Yacht";
+    updateSEO(SEO_DATA.about);
   }, []);
 
   const missionPoints = [

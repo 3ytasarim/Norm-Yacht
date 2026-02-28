@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { updateSEO, SEO_DATA } from "@/lib/seo";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -29,7 +30,7 @@ export default function Contact() {
   const { toast } = useToast();
 
   useEffect(() => {
-    document.title = "Contact Us - Norm Yacht";
+    updateSEO(SEO_DATA.contact);
   }, []);
 
   const form = useForm<ContactForm>({

@@ -3,6 +3,7 @@ import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/lib/languageContext";
 import { useTranslation } from "@/lib/i18n";
+import { updateSEO, SEO_DATA } from "@/lib/seo";
 import type { Project } from "@shared/schema";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
@@ -89,7 +90,7 @@ export default function Projects() {
   const { data: allProjects = [], isLoading } = useQuery<Project[]>({ queryKey: ["/api/projects"] });
 
   useEffect(() => {
-    document.title = "Projects - Norm Yacht";
+    updateSEO(SEO_DATA.projects);
   }, []);
 
   const completed = allProjects.filter((p) => p.status === "completed");

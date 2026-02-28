@@ -3,6 +3,7 @@ import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/lib/languageContext";
 import { useTranslation } from "@/lib/i18n";
+import { updateSEO, SEO_DATA } from "@/lib/seo";
 import type { Service } from "@shared/schema";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowRight } from "lucide-react";
@@ -18,7 +19,7 @@ export default function Services() {
   const { data: services = [], isLoading } = useQuery<Service[]>({ queryKey: ["/api/services"] });
 
   useEffect(() => {
-    document.title = "Services - Norm Yacht";
+    updateSEO(SEO_DATA.services);
   }, []);
 
   return (

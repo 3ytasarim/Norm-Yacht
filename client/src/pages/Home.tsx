@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { updateSEO, SEO_DATA } from "@/lib/seo";
 import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/lib/languageContext";
@@ -471,7 +472,7 @@ function ContactCta() {
 
 export default function Home() {
   useEffect(() => {
-    document.title = "Norm Yacht - Hydraulic Repair & Marine Engineering";
+    updateSEO(SEO_DATA.home);
   }, []);
 
   return (
