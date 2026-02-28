@@ -51,7 +51,7 @@ export default function Services() {
                       className="service-card-hover bg-white rounded-lg overflow-hidden border border-gray-100 shadow-sm cursor-pointer group h-full flex flex-col"
                       data-testid={`card-service-${service.id}`}
                     >
-                      <div className="relative w-full h-80 overflow-hidden flex-shrink-0">
+                      <div className="relative w-full h-96 overflow-hidden flex-shrink-0">
                         <img
                           src={service.image || "https://images.unsplash.com/photo-1605281317010-fe5ffe798166?w=600&h=400&fit=crop"}
                           alt={title}
