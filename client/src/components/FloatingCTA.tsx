@@ -1,5 +1,5 @@
 import { Phone, MapPin } from "lucide-react";
-import { SiLinkedin } from "react-icons/si";
+import { SiLinkedin, SiInstagram } from "react-icons/si";
 
 export default function FloatingCTA() {
   return (
@@ -21,6 +21,16 @@ export default function FloatingCTA() {
         title="LinkedIn"
       >
         <SiLinkedin className="w-5 h-5" />
+      </a>
+      <a
+        href="https://www.instagram.com/norm_yacht/"
+        target="_blank"
+        rel="noopener noreferrer"
+        data-testid="cta-instagram"
+        className="flex items-center justify-center w-12 h-12 bg-[#0a1428] text-white hover:bg-[#E4405F] transition-colors"
+        title="Instagram"
+      >
+        <SiInstagram className="w-5 h-5" />
       </a>
       <a
         href="https://maps.google.com/?q=Norm+Yacht+Tuzla+Istanbul"
