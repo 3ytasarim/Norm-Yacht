@@ -7,6 +7,29 @@ import { db } from "./db";
 import * as schema from "@shared/schema";
 import { eq, sql } from "drizzle-orm";
 import bcrypt from "bcryptjs";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
+
+const uploadsDir = path.resolve(process.cwd(), "uploads");
+if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
+
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: (_req, _file, cb) => cb(null, uploadsDir),
+    filename: (_req, file, cb) => {
+      const ext = path.extname(file.originalname);
+      const name = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}${ext}`;
+      cb(null, name);
+    },
+  }),
+  limits: { fileSize: 10 * 1024 * 1024 },
+  fileFilter: (_req, file, cb) => {
+    const allowed = /\.(jpg|jpeg|png|gif|webp|svg|avif)$/i;
+    if (allowed.test(file.originalname)) cb(null, true);
+    else cb(new Error("Only image files are allowed"));
+  },
+});
 
 async function seedData() {
   try {
@@ -197,6 +220,20 @@ export async function registerRoutes(httpServer: any, app: Express): Promise<Ser
     }
     next();
   }
+
+  app.use("/uploads", (await import("express")).default.static(uploadsDir));
+
+  app.post("/api/upload", requireAdmin, upload.single("file"), (req: any, res) => {
+    if (!req.file) return res.status(400).json({ message: "No file uploaded" });
+    const url = `/uploads/${req.file.filename}`;
+    res.json({ url, filename: req.file.filename });
+  });
+
+  app.post("/api/upload/multiple", requireAdmin, upload.array("files", 20), (req: any, res) => {
+    if (!req.files || req.files.length === 0) return res.status(400).json({ message: "No files uploaded" });
+    const urls = req.files.map((f: any) => ({ url: `/uploads/${f.filename}`, filename: f.filename }));
+    res.json(urls);
+  });
 
   // --- SLIDER ---
   app.get("/api/slider", async (req, res) => {

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useLocation } from "wouter";
@@ -20,8 +20,78 @@ import type { SliderItem, Service, Project, NewsItem, ContactMessage } from "@sh
 import logoPath from "@assets/logo-white.png";
 import {
   LayoutDashboard, Image, Wrench, FolderOpen, Newspaper, Mail, LogOut,
-  Plus, Pencil, Trash2, Eye, Menu, X, Check, ChevronDown, ChevronRight
+  Plus, Pencil, Trash2, Eye, Menu, X, Check, ChevronDown, ChevronRight, Upload, ImagePlus, Loader2
 } from "lucide-react";
+
+function ImageUpload({ value, onChange, label, testId }: { value: string; onChange: (url: string) => void; label: string; testId?: string }) {
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+
+  const handleUpload = useCallback(async (file: File) => {
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await fetch("/api/upload", { method: "POST", body: formData, credentials: "include" });
+      if (!res.ok) throw new Error("Upload failed");
+      const data = await res.json();
+      onChange(data.url);
+    } catch (e) {
+      console.error("Upload error:", e);
+    } finally {
+      setUploading(false);
+    }
+  }, [onChange]);
+
+  return (
+    <div>
+      <Label className="text-xs font-bold text-gray-500 uppercase mb-1 block">{label}</Label>
+      <input type="file" ref={fileRef} accept="image/*" className="hidden" onChange={(e) => { if (e.target.files?.[0]) handleUpload(e.target.files[0]); }} data-testid={testId} />
+      {value ? (
+        <div className="relative group">
+          <img src={value} alt="preview" className="w-full h-32 object-cover rounded-lg border border-gray-200" />
+          <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center gap-2">
+            <Button size="sm" variant="secondary" onClick={() => fileRef.current?.click()} disabled={uploading}>
+              {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+              {uploading ? "" : " Change"}
+            </Button>
+            <Button size="sm" variant="destructive" onClick={() => onChange("")}>
+              <Trash2 className="w-4 h-4" />
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <button
+          type="button"
+          onClick={() => fileRef.current?.click()}
+          disabled={uploading}
+          className="w-full h-32 rounded-lg border-2 border-dashed border-gray-300 hover:border-[#F5A623] flex flex-col items-center justify-center gap-2 text-gray-400 hover:text-[#F5A623] transition-colors cursor-pointer"
+        >
+          {uploading ? <Loader2 className="w-6 h-6 animate-spin" /> : <ImagePlus className="w-6 h-6" />}
+          <span className="text-xs font-medium">{uploading ? "Uploading..." : "Click to upload"}</span>
+        </button>
+      )}
+    </div>
+  );
+}
+
+function MultiImageUpload({ onUpload, uploading }: { onUpload: (files: FileList) => void; uploading: boolean }) {
+  const fileRef = useRef<HTMLInputElement>(null);
+  return (
+    <div>
+      <input type="file" ref={fileRef} accept="image/*" multiple className="hidden" onChange={(e) => { if (e.target.files) onUpload(e.target.files); }} data-testid="input-multi-image-upload" />
+      <button
+        type="button"
+        onClick={() => fileRef.current?.click()}
+        disabled={uploading}
+        className="w-full h-24 rounded-lg border-2 border-dashed border-gray-300 hover:border-[#F5A623] flex flex-col items-center justify-center gap-1.5 text-gray-400 hover:text-[#F5A623] transition-colors cursor-pointer"
+      >
+        {uploading ? <Loader2 className="w-5 h-5 animate-spin" /> : <ImagePlus className="w-5 h-5" />}
+        <span className="text-xs font-medium">{uploading ? "Uploading..." : "Add gallery images"}</span>
+      </button>
+    </div>
+  );
+}
 
 function useAdminAuth() {
   const [, navigate] = useLocation();
@@ -186,8 +256,7 @@ function SliderManager() {
               <Input value={formData.buttonTextRu || ""} onChange={(e) => setFormData({ ...formData, buttonTextRu: e.target.value })} />
             </div>
             <div className="sm:col-span-2">
-              <Label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Right Image URL</Label>
-              <Input value={formData.rightImage || ""} onChange={(e) => setFormData({ ...formData, rightImage: e.target.value })} placeholder="https://..." />
+              <ImageUpload value={formData.rightImage || ""} onChange={(url) => setFormData({ ...formData, rightImage: url })} label="Slide Image" testId="upload-slider-image" />
             </div>
             <div>
               <Label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Background Color</Label>
@@ -229,7 +298,6 @@ function ServicesManager() {
   const [editItem, setEditItem] = useState<Service | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState<any>({});
-  const [imageUrl, setImageUrl] = useState("");
 
   const openEdit = (s: Service) => {
     setEditItem(s);
@@ -258,7 +326,7 @@ function ServicesManager() {
 
   const addImageMutation = useMutation({
     mutationFn: ({ id, url }: { id: number; url: string }) => apiRequest("POST", `/api/services/${id}/images`, { imageUrl: url }),
-    onSuccess: () => { toast({ title: "Image added" }); setImageUrl(""); },
+    onSuccess: () => { toast({ title: "Image added" }); },
   });
 
   const iconOptions = ["Wrench", "Waves", "Navigation", "Settings", "Activity", "Gauge", "Hammer", "Zap", "Cog", "Anchor"];
@@ -341,11 +409,7 @@ function ServicesManager() {
               </Select>
             </div>
             <div>
-              <Label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Card Image URL</Label>
-              <Input value={formData.image || ""} onChange={(e) => setFormData({ ...formData, image: e.target.value })} placeholder="https://images.unsplash.com/..." data-testid="input-service-card-image" />
-              {formData.image && (
-                <img src={formData.image} alt="preview" className="mt-2 w-full h-24 object-cover rounded border" />
-              )}
+              <ImageUpload value={formData.image || ""} onChange={(url) => setFormData({ ...formData, image: url })} label="Card Image" testId="upload-service-card-image" />
             </div>
             <div>
               <Label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Order</Label>
@@ -353,22 +417,20 @@ function ServicesManager() {
             </div>
             {editItem && (
               <div className="sm:col-span-2">
-                <Label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Add Image URL</Label>
-                <div className="flex gap-2">
-                  <Input
-                    value={imageUrl}
-                    onChange={(e) => setImageUrl(e.target.value)}
-                    placeholder="https://..."
-                    data-testid="input-service-image-url"
-                  />
-                  <Button
-                    variant="outline"
-                    onClick={() => imageUrl && addImageMutation.mutate({ id: editItem.id, url: imageUrl })}
-                    disabled={addImageMutation.isPending}
-                  >
-                    Add
-                  </Button>
-                </div>
+                <Label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Gallery Images</Label>
+                <MultiImageUpload uploading={addImageMutation.isPending} onUpload={async (files) => {
+                  for (let i = 0; i < files.length; i++) {
+                    const fd = new FormData();
+                    fd.append("file", files[i]);
+                    try {
+                      const res = await fetch("/api/upload", { method: "POST", body: fd, credentials: "include" });
+                      if (res.ok) {
+                        const data = await res.json();
+                        await addImageMutation.mutateAsync({ id: editItem.id, url: data.url });
+                      }
+                    } catch (e) { console.error(e); }
+                  }
+                }} />
               </div>
             )}
           </div>
@@ -396,7 +458,6 @@ function ProjectsManager() {
   const [editItem, setEditItem] = useState<Project | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState<any>({});
-  const [imageUrl, setImageUrl] = useState("");
 
   const openEdit = (p: Project) => { setEditItem(p); setFormData({ ...p }); setShowForm(true); };
   const openAdd = () => {
@@ -420,7 +481,7 @@ function ProjectsManager() {
 
   const addImageMutation = useMutation({
     mutationFn: ({ id, url }: { id: number; url: string }) => apiRequest("POST", `/api/projects/${id}/images`, { imageUrl: url }),
-    onSuccess: () => { toast({ title: "Image added" }); setImageUrl(""); },
+    onSuccess: () => { toast({ title: "Image added" }); },
   });
 
   if (isLoading) return <Skeleton className="h-48 w-full" />;
@@ -516,16 +577,24 @@ function ProjectsManager() {
               <Input value={formData.completionDate || ""} onChange={(e) => setFormData({ ...formData, completionDate: e.target.value })} placeholder="2024-12" />
             </div>
             <div className="sm:col-span-2">
-              <Label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Main Image URL</Label>
-              <Input value={formData.mainImage || ""} onChange={(e) => setFormData({ ...formData, mainImage: e.target.value })} placeholder="https://..." />
+              <ImageUpload value={formData.mainImage || ""} onChange={(url) => setFormData({ ...formData, mainImage: url })} label="Main Image" testId="upload-project-main-image" />
             </div>
             {editItem && (
               <div className="sm:col-span-2">
-                <Label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Add Extra Image URL</Label>
-                <div className="flex gap-2">
-                  <Input value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} placeholder="https://..." data-testid="input-project-image-url" />
-                  <Button variant="outline" onClick={() => imageUrl && addImageMutation.mutate({ id: editItem.id, url: imageUrl })} disabled={addImageMutation.isPending}>Add</Button>
-                </div>
+                <Label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Extra Gallery Images</Label>
+                <MultiImageUpload uploading={addImageMutation.isPending} onUpload={async (files) => {
+                  for (let i = 0; i < files.length; i++) {
+                    const fd = new FormData();
+                    fd.append("file", files[i]);
+                    try {
+                      const res = await fetch("/api/upload", { method: "POST", body: fd, credentials: "include" });
+                      if (res.ok) {
+                        const data = await res.json();
+                        await addImageMutation.mutateAsync({ id: editItem.id, url: data.url });
+                      }
+                    } catch (e) { console.error(e); }
+                  }
+                }} />
               </div>
             )}
           </div>
@@ -653,8 +722,7 @@ function NewsManager() {
               <Input value={formData.tags || ""} onChange={(e) => setFormData({ ...formData, tags: e.target.value })} placeholder="Marine, Hydraulics" data-testid="input-news-tags" />
             </div>
             <div className="sm:col-span-2">
-              <Label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Image URL</Label>
-              <Input value={formData.image || ""} onChange={(e) => setFormData({ ...formData, image: e.target.value })} placeholder="https://..." />
+              <ImageUpload value={formData.image || ""} onChange={(url) => setFormData({ ...formData, image: url })} label="Article Image" testId="upload-news-image" />
             </div>
           </div>
           <DialogFooter>

@@ -61,6 +61,17 @@ Full-featured multilingual corporate website for Norm Yat, a marine engineering 
 - 3 news articles
 - 1 admin user
 
+## Image Upload
+- Backend: `multer` for file upload, stored in `/uploads/` directory
+- API: `POST /api/upload` (single file) and `POST /api/upload/multiple` (multiple files)
+- Static serving: `/uploads/` directory served via express.static
+- Admin panel uses `ImageUpload` and `MultiImageUpload` components for all image fields
+- Max file size: 10MB, allowed: jpg, jpeg, png, gif, webp, svg, avif
+
+## Language Selector
+- SVG flag components (FlagGB, FlagTR, FlagRU) in Navbar — not emoji flags
+- Shows flag + language code (EN, TR, RU)
+
 ## Key Dependencies
 - `drizzle-orm` + `drizzle-zod` for schema/validation
 - `@tanstack/react-query` v5 for data fetching
@@ -69,3 +80,4 @@ Full-featured multilingual corporate website for Norm Yat, a marine engineering 
 - `express-session` + `bcryptjs` for auth
 - `react-hook-form` + `zod` for forms
 - `lucide-react` for icons
+- `multer` for file upload
