@@ -99,12 +99,7 @@ export default function ServiceDetail() {
               {t.services.title}
             </span>
           </Link>
-          <div className="flex items-center gap-5">
-            <div className="w-16 h-16 rounded-xl bg-[#F5A623]/20 flex items-center justify-center flex-shrink-0">
-              <Icon className="w-8 h-8 text-[#F5A623]" />
-            </div>
-            <h1 className="text-3xl md:text-4xl font-black">{title}</h1>
-          </div>
+          <h1 className="text-3xl md:text-4xl font-black">{title}</h1>
         </div>
       </div>
 
