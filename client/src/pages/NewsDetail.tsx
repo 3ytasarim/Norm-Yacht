@@ -48,9 +48,9 @@ export default function NewsDetail() {
   if (isError || !item) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-24 text-center">
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">Article not found</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-4">{t.news.notFound}</h2>
         <Link href="/news">
-          <Button variant="outline">Back to News</Button>
+          <Button variant="outline">{t.news.backToNews}</Button>
         </Link>
       </div>
     );
@@ -61,9 +61,10 @@ export default function NewsDetail() {
   const content = language === "tr" && item.contentTr ? item.contentTr :
                   language === "ru" && item.contentRu ? item.contentRu : item.content;
 
+  const dateLocale = language === "tr" ? "tr-TR" : language === "ru" ? "ru-RU" : "en-GB";
+
   return (
     <div>
-      {/* Hero image */}
       <div className="relative h-80 md:h-[450px] overflow-hidden">
         {item.image ? (
           <img src={item.image} alt={title} className="w-full h-full object-cover" />
@@ -86,13 +87,12 @@ export default function NewsDetail() {
 
       <section className="py-12 bg-white">
         <div className="max-w-4xl mx-auto px-4">
-          {/* Meta info */}
           <div className="flex flex-wrap items-center gap-4 mb-8 pb-8 border-b border-gray-100">
             <div className="flex items-center gap-2 text-sm text-gray-500">
               <Calendar className="w-4 h-4 text-[#F5A623]" />
               <span>{t.news.publishedAt}:</span>
               <span className="font-medium text-gray-700">
-                {item.publishedAt ? new Date(item.publishedAt).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : ""}
+                {item.publishedAt ? new Date(item.publishedAt).toLocaleDateString(dateLocale, { day: "numeric", month: "long", year: "numeric" }) : ""}
               </span>
             </div>
             <div className="flex items-center gap-2 text-sm text-gray-500">
@@ -110,13 +110,11 @@ export default function NewsDetail() {
             )}
           </div>
 
-          {/* Content */}
           <div
             className="prose prose-lg max-w-none text-gray-700 leading-relaxed prose-headings:font-black prose-headings:text-gray-900 prose-a:text-[#F5A623]"
             dangerouslySetInnerHTML={{ __html: content || "" }}
           />
 
-          {/* Back button */}
           <div className="mt-12 pt-8 border-t border-gray-100">
             <Link href="/news">
               <Button variant="outline" className="border-[#F5A623] text-[#F5A623] font-bold group">

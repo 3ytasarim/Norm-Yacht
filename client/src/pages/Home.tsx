@@ -52,58 +52,72 @@ function HeroSlider() {
     setCurrent((p) => (p + 1) % activeSlides.length);
   };
 
-  const getTitle = (slide: SliderItem) =>
-    language === "tr" && slide.titleTr ? slide.titleTr :
-    language === "ru" && slide.titleRu ? slide.titleRu : slide.title;
-
-  const getSubtitle = (slide: SliderItem) =>
-    language === "tr" && slide.subtitleTr ? slide.subtitleTr :
-    language === "ru" && slide.subtitleRu ? slide.subtitleRu : slide.subtitle;
-
-  const getButtonText = (slide: SliderItem) =>
-    language === "tr" && slide.buttonTextTr ? slide.buttonTextTr :
-    language === "ru" && slide.buttonTextRu ? slide.buttonTextRu : slide.buttonText;
-
   if (isLoading) {
-    return <div className="h-[600px] bg-[#0a1428] animate-pulse" />;
+    return <div className="h-[600px] bg-[#0a1428]" />;
   }
 
-  if (!activeSlides.length) return null;
+  if (activeSlides.length === 0) {
+    return (
+      <div className="relative h-[600px] bg-[#0a1428] flex items-center">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 relative z-10 w-full">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight max-w-2xl mb-6">
+            {t.home.heroTitle}
+          </h1>
+          <Link href="/services">
+            <Button size="lg" className="bg-[#F5A623] hover:bg-[#e8901a] text-white font-bold px-8 group">
+              {t.home.heroCta}
+              <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </Button>
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  const getTitle = (s: SliderItem) =>
+    language === "tr" && s.titleTr ? s.titleTr :
+    language === "ru" && s.titleRu ? s.titleRu : s.title;
+
+  const getSubtitle = (s: SliderItem) =>
+    language === "tr" && s.subtitleTr ? s.subtitleTr :
+    language === "ru" && s.subtitleRu ? s.subtitleRu : s.subtitle;
+
+  const getButtonText = (s: SliderItem) =>
+    language === "tr" && s.buttonTextTr ? s.buttonTextTr :
+    language === "ru" && s.buttonTextRu ? s.buttonTextRu : s.buttonText;
 
   const slide = activeSlides[current];
 
   return (
-    <div className="relative h-[600px] md:h-[680px] overflow-hidden" data-testid="hero-slider">
-      {/* Left background */}
-      <div
-        className="absolute inset-y-0 left-0 w-full md:w-1/2 transition-all duration-700"
-        style={{ backgroundColor: slide.bgColor || "#0a1428" }}
-      >
-        {slide.bgImage && (
-          <div
-            className="absolute inset-0 bg-cover bg-center opacity-20"
-            style={{ backgroundImage: `url(${slide.bgImage})` }}
-          />
-        )}
-        <div className="absolute inset-0 flex items-center">
-          <div className="px-8 md:px-12 lg:px-16 max-w-xl animate-slide-in-left">
-            <div className="w-12 h-1 bg-[#F5A623] mb-6 rounded-full" />
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-white leading-tight mb-5">
+    <div className="relative h-[600px] overflow-hidden" style={{ backgroundColor: slide.bgColor || "#0a1428" }}>
+      {slide.bgImage && (
+        <div className="absolute inset-0 z-0">
+          <img src={slide.bgImage} alt="" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-black/50" />
+        </div>
+      )}
+
+      <div className="relative z-10 h-full flex items-center">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 w-full">
+          <div className="max-w-xl">
+            <h1
+              key={`title-${current}`}
+              className="text-3xl md:text-4xl lg:text-5xl font-black text-white leading-tight mb-5 animate-slide-up"
+            >
               {getTitle(slide)}
             </h1>
             {getSubtitle(slide) && (
-              <p className="text-gray-300 text-base md:text-lg leading-relaxed mb-8">
+              <p
+                key={`sub-${current}`}
+                className="text-gray-300 text-base md:text-lg leading-relaxed mb-8 max-w-lg animate-slide-up-delay"
+              >
                 {getSubtitle(slide)}
               </p>
             )}
-            {slide.buttonText && slide.buttonLink && (
+            {slide.buttonLink && (
               <Link href={slide.buttonLink}>
-                <Button
-                  size="lg"
-                  className="bg-[#F5A623] hover:bg-[#e8901a] text-white font-bold px-8 py-3 rounded-md group"
-                  data-testid="button-hero-cta"
-                >
-                  {getButtonText(slide)}
+                <Button size="lg" className="bg-[#F5A623] hover:bg-[#e8901a] text-white font-bold px-8 group animate-slide-up-delay-2" data-testid="button-slider-cta">
+                  {getButtonText(slide) || t.home.heroCta}
                   <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
@@ -112,7 +126,6 @@ function HeroSlider() {
         </div>
       </div>
 
-      {/* Right image */}
       <div className="hidden md:block absolute inset-y-0 right-0 w-1/2 overflow-hidden">
         {slide.rightImage ? (
           <img
@@ -126,7 +139,6 @@ function HeroSlider() {
         <div className="absolute inset-0 bg-gradient-to-r from-[#0a1428] via-transparent to-transparent opacity-40" />
       </div>
 
-      {/* Navigation arrows */}
       {activeSlides.length > 1 && (
         <>
           <button
@@ -146,7 +158,6 @@ function HeroSlider() {
         </>
       )}
 
-      {/* Dots */}
       {activeSlides.length > 1 && (
         <div className="absolute bottom-6 left-8 md:left-12 flex gap-2 z-20">
           {activeSlides.map((_, i) => (
@@ -164,11 +175,13 @@ function HeroSlider() {
 }
 
 function StatsBar() {
+  const { language } = useLanguage();
+  const t = useTranslation(language);
   const stats = [
-    { icon: Calendar, label: "Founded", value: "2019" },
-    { icon: Wrench, label: "Projects Completed", value: "100+" },
-    { icon: Users, label: "Expert Engineers", value: "15+" },
-    { icon: Award, label: "Years Experience", value: "5+" },
+    { icon: Calendar, label: t.home.statsFounded, value: "2019" },
+    { icon: Wrench, label: t.home.statsProjects, value: "100+" },
+    { icon: Users, label: t.home.statsEngineers, value: "15+" },
+    { icon: Award, label: t.home.statsExperience, value: "5+" },
   ];
   return (
     <div className="bg-[#0a1428] text-white">
@@ -200,15 +213,15 @@ function AboutSection() {
       <div className="max-w-7xl mx-auto px-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
           <div>
-            <div className="text-[#F5A623] font-bold text-sm uppercase tracking-widest mb-3">About Us</div>
+            <div className="text-[#F5A623] font-bold text-sm uppercase tracking-widest mb-3">{t.home.aboutLabel}</div>
             <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-6 leading-tight">
               {t.home.aboutTitle}
             </h2>
             <p className="text-gray-600 leading-relaxed mb-4">
-              Norm Yat was established in 2019 in Istanbul Tuzla, Türkiye's leading hub for yacht building and refit operations. Since its foundation, the company has been delivering high-quality engineering solutions in the fields of superyacht engineering, yacht stabilization systems, and marine hydraulic systems.
+              {t.home.aboutText1}
             </p>
             <p className="text-gray-600 leading-relaxed mb-6">
-              Operating from Tuzla, at the heart of the Turkish maritime industry, Norm Yat provides comprehensive engineering services to yacht owners, shipyards, and project managers. The company specializes in the design, integration, installation, commissioning, and maintenance of advanced stabilizer systems, custom hydraulic solutions, and complete turnkey yacht engineering projects.
+              {t.home.aboutText2}
             </p>
             <Link href="/about">
               <Button className="bg-[#F5A623] hover:bg-[#e8901a] text-white font-bold group">
@@ -242,7 +255,7 @@ function ServicesSection() {
     <section className="py-20 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4">
         <div className="text-center mb-14">
-          <div className="text-[#F5A623] font-bold text-sm uppercase tracking-widest mb-3">What We Do</div>
+          <div className="text-[#F5A623] font-bold text-sm uppercase tracking-widest mb-3">{t.home.servicesLabel}</div>
           <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-4">{t.home.servicesTitle}</h2>
           <p className="text-gray-600 max-w-2xl mx-auto">{t.home.servicesSubtitle}</p>
           <div className="section-divider w-20 mx-auto mt-6" />
@@ -306,7 +319,7 @@ function ProjectsSection() {
     <section className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4">
         <div className="text-center mb-14">
-          <div className="text-[#F5A623] font-bold text-sm uppercase tracking-widest mb-3">Our Work</div>
+          <div className="text-[#F5A623] font-bold text-sm uppercase tracking-widest mb-3">{t.home.projectsLabel}</div>
           <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-4">{t.home.projectsTitle}</h2>
           <p className="text-gray-600 max-w-2xl mx-auto">{t.home.projectsSubtitle}</p>
           <div className="section-divider w-20 mx-auto mt-6" />
@@ -340,7 +353,7 @@ function ProjectsSection() {
                       <Badge
                         className={`absolute top-4 left-4 text-white text-xs font-bold ${project.status === "completed" ? "bg-green-600" : "bg-[#F5A623]"}`}
                       >
-                        {project.status === "completed" ? t.projects.completed.split(" ")[0] : "Ongoing"}
+                        {project.status === "completed" ? t.projects.statusCompleted : t.projects.statusOngoing}
                       </Badge>
                     </div>
                     <div className="p-5 bg-white">
@@ -381,7 +394,7 @@ function NewsSection() {
     <section className="py-20 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4">
         <div className="text-center mb-14">
-          <div className="text-[#F5A623] font-bold text-sm uppercase tracking-widest mb-3">Latest</div>
+          <div className="text-[#F5A623] font-bold text-sm uppercase tracking-widest mb-3">{t.home.newsLabel}</div>
           <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-4">{t.home.newsTitle}</h2>
           <p className="text-gray-600 max-w-2xl mx-auto">{t.home.newsSubtitle}</p>
           <div className="section-divider w-20 mx-auto mt-6" />
@@ -415,7 +428,7 @@ function NewsSection() {
                     <div className="p-5">
                       <div className="flex items-center gap-3 mb-3">
                         <span className="text-xs text-gray-500">
-                          {item.publishedAt ? new Date(item.publishedAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : ""}
+                          {item.publishedAt ? new Date(item.publishedAt).toLocaleDateString(language === "tr" ? "tr-TR" : language === "ru" ? "ru-RU" : "en-GB", { day: "numeric", month: "short", year: "numeric" }) : ""}
                         </span>
                         {item.tags && item.tags[0] && (
                           <Badge className="bg-[#F5A623]/10 text-[#F5A623] text-xs border-0 font-semibold">{item.tags[0]}</Badge>
@@ -456,7 +469,7 @@ function ContactCta() {
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#F5A623] rounded-full translate-y-1/2 -translate-x-1/2" />
       </div>
       <div className="max-w-7xl mx-auto px-4 text-center relative z-10">
-        <div className="text-[#F5A623] font-bold text-sm uppercase tracking-widest mb-4">Get In Touch</div>
+        <div className="text-[#F5A623] font-bold text-sm uppercase tracking-widest mb-4">{t.home.contactCtaLabel}</div>
         <h2 className="text-3xl md:text-4xl font-black text-white mb-4">{t.home.contactCta}</h2>
         <p className="text-gray-400 text-lg mb-10 max-w-xl mx-auto">{t.home.contactCtaText}</p>
         <Link href="/contact">

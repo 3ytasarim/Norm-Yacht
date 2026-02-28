@@ -23,7 +23,7 @@ export default function News() {
       {/* Hero */}
       <div className="bg-[#0a1428] text-white py-20">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="text-[#F5A623] font-bold text-sm uppercase tracking-widest mb-3">Updates</div>
+          <div className="text-[#F5A623] font-bold text-sm uppercase tracking-widest mb-3">{t.news.label}</div>
           <h1 className="text-4xl md:text-5xl font-black mb-4">{t.news.title}</h1>
           <p className="text-gray-400 text-lg max-w-2xl">{t.news.subtitle}</p>
         </div>
@@ -36,7 +36,7 @@ export default function News() {
               {[...Array(6)].map((_, i) => <Skeleton key={i} className="h-80 rounded-lg" />)}
             </div>
           ) : newsItems.length === 0 ? (
-            <div className="text-center py-20 text-gray-500">No news articles yet.</div>
+            <div className="text-center py-20 text-gray-500">{t.news.noNews}</div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {newsItems.map((item) => {
@@ -66,7 +66,7 @@ export default function News() {
                         <div className="flex items-center gap-3 mb-3 flex-wrap">
                           <div className="flex items-center gap-1.5 text-xs text-gray-500">
                             <Calendar className="w-3.5 h-3.5 text-[#F5A623]" />
-                            {item.publishedAt ? new Date(item.publishedAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : ""}
+                            {item.publishedAt ? new Date(item.publishedAt).toLocaleDateString(language === "tr" ? "tr-TR" : language === "ru" ? "ru-RU" : "en-GB", { day: "numeric", month: "short", year: "numeric" }) : ""}
                           </div>
                           <div className="flex items-center gap-1.5 text-xs text-gray-500">
                             <User className="w-3.5 h-3.5 text-[#F5A623]" />

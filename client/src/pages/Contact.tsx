@@ -14,15 +14,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { MapPin, Phone, Mail, Clock, Send } from "lucide-react";
 
-const contactSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Please enter a valid email address"),
-  phone: z.string().optional(),
-  subject: z.string().optional(),
-  message: z.string().min(10, "Message must be at least 10 characters"),
-});
-
-type ContactForm = z.infer<typeof contactSchema>;
+type ContactForm = {
+  name: string;
+  email: string;
+  phone?: string;
+  subject?: string;
+  message: string;
+};
 
 export default function Contact() {
   const { language } = useLanguage();
@@ -33,6 +31,14 @@ export default function Contact() {
     updateSEO(SEO_DATA.contact);
   }, []);
 
+  const contactSchema = z.object({
+    name: z.string().min(2, t.contact.validationName),
+    email: z.string().email(t.contact.validationEmail),
+    phone: z.string().optional(),
+    subject: z.string().optional(),
+    message: z.string().min(10, t.contact.validationMessage),
+  });
+
   const form = useForm<ContactForm>({
     resolver: zodResolver(contactSchema),
     defaultValues: { name: "", email: "", phone: "", subject: "", message: "" },
@@ -41,11 +47,11 @@ export default function Contact() {
   const mutation = useMutation({
     mutationFn: (data: ContactForm) => apiRequest("POST", "/api/contact", data),
     onSuccess: () => {
-      toast({ title: "Success", description: t.contact.success });
+      toast({ title: t.contact.successTitle, description: t.contact.success });
       form.reset();
     },
     onError: () => {
-      toast({ title: "Error", description: t.contact.error, variant: "destructive" });
+      toast({ title: t.contact.errorTitle, description: t.contact.error, variant: "destructive" });
     },
   });
 
@@ -81,7 +87,7 @@ export default function Contact() {
       {/* Hero */}
       <div className="bg-[#0a1428] text-white py-20">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="text-[#F5A623] font-bold text-sm uppercase tracking-widest mb-3">Get In Touch</div>
+          <div className="text-[#F5A623] font-bold text-sm uppercase tracking-widest mb-3">{t.contact.label}</div>
           <h1 className="text-4xl md:text-5xl font-black mb-4">{t.contact.title}</h1>
           <p className="text-gray-400 text-lg max-w-2xl">{t.contact.subtitle}</p>
         </div>
@@ -92,7 +98,7 @@ export default function Contact() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Contact info */}
             <div>
-              <h2 className="text-2xl font-black text-gray-900 mb-8">Contact Information</h2>
+              <h2 className="text-2xl font-black text-gray-900 mb-8">{t.contact.contactInfo}</h2>
               <div className="space-y-6 mb-10">
                 {contactInfo.map((info, i) => {
                   const Icon = info.icon;
@@ -133,7 +139,7 @@ export default function Contact() {
 
             {/* Contact form */}
             <div>
-              <h2 className="text-2xl font-black text-gray-900 mb-8">Send Us a Message</h2>
+              <h2 className="text-2xl font-black text-gray-900 mb-8">{t.contact.sendMessage}</h2>
               <div className="bg-gray-50 rounded-lg p-8 border border-gray-100">
                 <Form {...form}>
                   <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">

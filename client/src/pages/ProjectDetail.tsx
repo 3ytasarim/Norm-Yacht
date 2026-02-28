@@ -81,9 +81,9 @@ export default function ProjectDetail() {
   if (isError || !project) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-24 text-center">
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">Project not found</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-4">{t.projects.notFound}</h2>
         <Link href="/projects">
-          <Button variant="outline">Back to Projects</Button>
+          <Button variant="outline">{t.projects.backToProjects}</Button>
         </Link>
       </div>
     );
@@ -96,7 +96,6 @@ export default function ProjectDetail() {
 
   return (
     <div>
-      {/* Hero */}
       <div className="bg-[#0a1428] text-white py-16">
         <div className="max-w-7xl mx-auto px-4">
           <Link href="/projects">
@@ -108,7 +107,7 @@ export default function ProjectDetail() {
           <div className="flex flex-wrap items-center gap-4">
             <h1 className="text-3xl md:text-4xl font-black">{title}</h1>
             <Badge className={`text-white font-bold ${project.status === "completed" ? "bg-green-600" : "bg-[#F5A623]"}`}>
-              {project.status === "completed" ? "Completed" : "Ongoing"}
+              {project.status === "completed" ? t.projects.statusCompleted : t.projects.statusOngoing}
             </Badge>
           </div>
         </div>
@@ -117,9 +116,7 @@ export default function ProjectDetail() {
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-            {/* Left: images + description */}
             <div className="lg:col-span-2">
-              {/* Main image carousel */}
               {allImages.length > 0 && (
                 <div className="mb-6">
                   <div className="relative rounded-lg overflow-hidden bg-gray-100 group cursor-pointer" style={{ height: "500px" }} onClick={() => { if (autoRef.current) clearInterval(autoRef.current); setLightboxOpen(true); }}>
@@ -159,7 +156,6 @@ export default function ProjectDetail() {
                       </>
                     )}
                   </div>
-                  {/* Thumbnails */}
                   {allImages.length > 1 && (
                     <div className="flex gap-2 mt-3 flex-wrap">
                       {allImages.map((img, i) => (
@@ -177,17 +173,16 @@ export default function ProjectDetail() {
                 </div>
               )}
 
-              <h2 className="text-2xl font-black text-gray-900 mb-5">Project Description</h2>
+              <h2 className="text-2xl font-black text-gray-900 mb-5">{t.projects.projectDescription}</h2>
               <div
                 className="prose prose-lg max-w-none text-gray-600 leading-relaxed prose-headings:font-black prose-headings:text-gray-900 prose-a:text-[#F5A623] prose-li:my-0.5"
                 dangerouslySetInnerHTML={{ __html: description || "" }}
               />
             </div>
 
-            {/* Sidebar */}
             <div className="lg:col-span-1">
               <div className="bg-gray-50 rounded-lg p-6 border border-gray-100 sticky top-28">
-                <h3 className="font-black text-gray-900 text-lg mb-5 pb-4 border-b border-gray-200">Project Details</h3>
+                <h3 className="font-black text-gray-900 text-lg mb-5 pb-4 border-b border-gray-200">{t.projects.projectDetails}</h3>
                 <div className="space-y-4">
                   {project.category && (
                     <div>
@@ -214,16 +209,16 @@ export default function ProjectDetail() {
                     </div>
                   )}
                   <div>
-                    <div className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Status</div>
+                    <div className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">{t.projects.status}</div>
                     <Badge className={`${project.status === "completed" ? "bg-green-600" : "bg-[#F5A623]"} text-white font-bold`}>
-                      {project.status === "completed" ? "Completed" : "Ongoing"}
+                      {project.status === "completed" ? t.projects.statusCompleted : t.projects.statusOngoing}
                     </Badge>
                   </div>
                 </div>
                 <div className="mt-6 pt-6 border-t border-gray-200">
                   <Link href="/contact">
                     <Button className="w-full bg-[#F5A623] hover:bg-[#e8901a] text-white font-bold">
-                      Discuss a Similar Project
+                      {t.projects.discussProject}
                     </Button>
                   </Link>
                 </div>

@@ -80,9 +80,9 @@ export default function ServiceDetail() {
   if (isError || !service) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-24 text-center">
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">Service not found</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-4">{t.services.notFound}</h2>
         <Link href="/services">
-          <Button variant="outline">Back to Services</Button>
+          <Button variant="outline">{t.services.backToServices}</Button>
         </Link>
       </div>
     );
@@ -96,7 +96,6 @@ export default function ServiceDetail() {
 
   return (
     <div>
-      {/* Hero */}
       <div className="bg-[#0a1428] text-white py-16">
         <div className="max-w-7xl mx-auto px-4">
           <Link href="/services">
@@ -112,19 +111,16 @@ export default function ServiceDetail() {
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-            {/* Description */}
             <div className="lg:col-span-2">
-              <h2 className="text-2xl font-black text-gray-900 mb-6">About This Service</h2>
+              <h2 className="text-2xl font-black text-gray-900 mb-6">{t.services.aboutService}</h2>
               <div
                 className="prose prose-lg max-w-none text-gray-600 leading-relaxed prose-headings:font-black prose-headings:text-gray-900 prose-a:text-[#F5A623] prose-li:my-0.5"
                 dangerouslySetInnerHTML={{ __html: description || "" }}
               />
 
-              {/* Image gallery */}
               {service.images && service.images.length > 0 && (
                 <div className="mt-10">
-                  <h3 className="text-xl font-black text-gray-900 mb-5">Gallery</h3>
-                  {/* Main image */}
+                  <h3 className="text-xl font-black text-gray-900 mb-5">{t.services.gallery}</h3>
                   <div className="relative rounded-lg overflow-hidden bg-gray-100 mb-4 group cursor-pointer" style={{ height: "500px" }} onClick={() => { stopAuto(); setLightboxOpen(true); }}>
                     <img
                       src={service.images[imgIndex]?.imageUrl}
@@ -153,7 +149,6 @@ export default function ServiceDetail() {
                       </>
                     )}
                   </div>
-                  {/* Thumbnails */}
                   {service.images.length > 1 && (
                     <div className="flex gap-3 flex-wrap">
                       {service.images.map((img, i) => (
@@ -172,12 +167,11 @@ export default function ServiceDetail() {
               )}
             </div>
 
-            {/* Sidebar */}
             <div className="lg:col-span-1">
               <div className="bg-gray-50 rounded-lg p-6 border border-gray-100 sticky top-28">
-                <h3 className="font-black text-gray-900 text-lg mb-5 pb-4 border-b border-gray-200">Need This Service?</h3>
+                <h3 className="font-black text-gray-900 text-lg mb-5 pb-4 border-b border-gray-200">{t.services.needService}</h3>
                 <p className="text-gray-600 text-sm mb-6 leading-relaxed">
-                  Contact our expert team to discuss your specific requirements and get a personalized quote.
+                  {t.services.needServiceText}
                 </p>
                 <Link href="/contact">
                   <Button className="w-full bg-[#F5A623] hover:bg-[#e8901a] text-white font-bold" data-testid="button-contact-cta">
@@ -187,15 +181,15 @@ export default function ServiceDetail() {
                 <div className="mt-6 pt-6 border-t border-gray-200 space-y-3">
                   <div className="flex items-center gap-2 text-sm text-gray-600">
                     <span className="w-2 h-2 bg-[#F5A623] rounded-full" />
-                    International Standards
+                    {t.services.internationalStandards}
                   </div>
                   <div className="flex items-center gap-2 text-sm text-gray-600">
                     <span className="w-2 h-2 bg-[#F5A623] rounded-full" />
-                    Expert Engineering Team
+                    {t.services.expertTeam}
                   </div>
                   <div className="flex items-center gap-2 text-sm text-gray-600">
                     <span className="w-2 h-2 bg-[#F5A623] rounded-full" />
-                    Tuzla, Istanbul Based
+                    {t.services.basedIn}
                   </div>
                 </div>
               </div>

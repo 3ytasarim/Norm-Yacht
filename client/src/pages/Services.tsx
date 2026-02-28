@@ -27,7 +27,7 @@ export default function Services() {
       {/* Hero */}
       <div className="bg-[#0a1428] text-white py-20">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="text-[#F5A623] font-bold text-sm uppercase tracking-widest mb-3">What We Offer</div>
+          <div className="text-[#F5A623] font-bold text-sm uppercase tracking-widest mb-3">{t.services.label}</div>
           <h1 className="text-4xl md:text-5xl font-black mb-4">{t.services.title}</h1>
           <p className="text-gray-400 text-lg max-w-2xl">{t.services.subtitle}</p>
         </div>
@@ -80,9 +80,9 @@ export default function Services() {
       {/* CTA */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 text-center">
-          <h2 className="text-2xl md:text-3xl font-black text-gray-900 mb-4">Need a Custom Solution?</h2>
+          <h2 className="text-2xl md:text-3xl font-black text-gray-900 mb-4">{t.services.customSolution}</h2>
           <p className="text-gray-600 mb-8 max-w-xl mx-auto">
-            Contact our expert engineering team to discuss your specific requirements and get a tailored solution.
+            {t.services.customSolutionText}
           </p>
           <Link href="/contact">
             <button className="bg-[#F5A623] hover:bg-[#e8901a] text-white font-bold px-8 py-3 rounded-md inline-flex items-center gap-2 transition-colors">

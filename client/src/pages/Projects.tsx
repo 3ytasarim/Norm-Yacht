@@ -42,7 +42,7 @@ function ProjectCard({ project, t, language }: { project: Project; t: any; langu
           <Badge
             className={`absolute top-4 left-4 text-white font-bold text-xs ${project.status === "completed" ? "bg-green-600" : "bg-[#F5A623]"}`}
           >
-            {project.status === "completed" ? "Completed" : "Ongoing"}
+            {project.status === "completed" ? t.projects.statusCompleted : t.projects.statusOngoing}
           </Badge>
         </div>
 
@@ -102,7 +102,7 @@ export default function Projects() {
       {/* Hero */}
       <div className="bg-[#0a1428] text-white py-20">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="text-[#F5A623] font-bold text-sm uppercase tracking-widest mb-3">Portfolio</div>
+          <div className="text-[#F5A623] font-bold text-sm uppercase tracking-widest mb-3">{t.projects.label}</div>
           <h1 className="text-4xl md:text-5xl font-black mb-4">{t.projects.title}</h1>
           <p className="text-gray-400 text-lg max-w-2xl">{t.projects.subtitle}</p>
         </div>
@@ -132,7 +132,7 @@ export default function Projects() {
                 </div>
               ) : displayed.length === 0 ? (
                 <div className="text-center py-20 text-gray-500">
-                  No projects found in this category.
+                  {t.projects.noProjects}
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

@@ -10,10 +10,12 @@ Full-featured multilingual corporate website for Norm Yat, a marine engineering 
 - Logo: `attached_assets/43219e59-fadc-46c1-b45c-d18f3e4cce0a_1772014162879.jpg`
 
 ## Languages
-- English (default), Turkish, Russian
+- English (default), Turkish, Russian — full i18n coverage across all pages
 - Language stored in `localStorage` key `"norm-yacht-lang"`
 - Hook: `useLanguage()` from `@/lib/languageContext`
 - Translations: `useTranslation(language)` from `@/lib/i18n`
+- All UI strings are translated: labels, headings, descriptions, form validation, toasts, status badges, error messages, date formatting
+- Date locale adapts per language (en-GB, tr-TR, ru-RU)
 
 ## Architecture
 - **Frontend**: React + TypeScript + Vite at `client/`

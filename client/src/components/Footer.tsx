@@ -37,7 +37,7 @@ export default function Footer() {
                 <Youtube className="w-4 h-4" />
               </a>
               <a
-                href="https://instagram.com"
+                href="https://www.instagram.com/norm_yacht/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#F5A623] transition-colors"
