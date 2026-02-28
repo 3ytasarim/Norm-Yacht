@@ -99,11 +99,10 @@ export default function ServiceDetail() {
             {/* Description */}
             <div className="lg:col-span-2">
               <h2 className="text-2xl font-black text-gray-900 mb-6">About This Service</h2>
-              <div className="text-gray-600 leading-relaxed space-y-4">
-                {description?.split("\n").filter(Boolean).map((para, i) => (
-                  <p key={i}>{para}</p>
-                )) || <p>{description}</p>}
-              </div>
+              <div
+                className="prose prose-lg max-w-none text-gray-600 leading-relaxed prose-headings:font-black prose-headings:text-gray-900 prose-a:text-[#F5A623] prose-li:my-0.5"
+                dangerouslySetInnerHTML={{ __html: description || "" }}
+              />
 
               {/* Image gallery */}
               {service.images && service.images.length > 0 && (

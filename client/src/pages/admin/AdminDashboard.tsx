@@ -18,6 +18,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import type { SliderItem, Service, Project, NewsItem, ContactMessage } from "@shared/schema";
 import logoPath from "@assets/logo-white.png";
+import RichTextEditor from "@/components/RichTextEditor";
 import {
   LayoutDashboard, Image, Wrench, FolderOpen, Newspaper, Mail, LogOut,
   Plus, Pencil, Trash2, Eye, Menu, X, Check, ChevronDown, ChevronRight, Upload, ImagePlus, Loader2
@@ -388,16 +389,13 @@ function ServicesManager() {
               <Input value={formData.titleRu || ""} onChange={(e) => setFormData({ ...formData, titleRu: e.target.value })} />
             </div>
             <div className="sm:col-span-2">
-              <Label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Description (EN)</Label>
-              <Textarea rows={3} value={formData.description || ""} onChange={(e) => setFormData({ ...formData, description: e.target.value })} />
+              <RichTextEditor value={formData.description || ""} onChange={(html) => setFormData({ ...formData, description: html })} label="Description (EN)" testId="editor-service-desc-en" />
             </div>
-            <div>
-              <Label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Description (TR)</Label>
-              <Textarea rows={3} value={formData.descriptionTr || ""} onChange={(e) => setFormData({ ...formData, descriptionTr: e.target.value })} />
+            <div className="sm:col-span-2">
+              <RichTextEditor value={formData.descriptionTr || ""} onChange={(html) => setFormData({ ...formData, descriptionTr: html })} label="Description (TR)" testId="editor-service-desc-tr" />
             </div>
-            <div>
-              <Label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Description (RU)</Label>
-              <Textarea rows={3} value={formData.descriptionRu || ""} onChange={(e) => setFormData({ ...formData, descriptionRu: e.target.value })} />
+            <div className="sm:col-span-2">
+              <RichTextEditor value={formData.descriptionRu || ""} onChange={(html) => setFormData({ ...formData, descriptionRu: html })} label="Description (RU)" testId="editor-service-desc-ru" />
             </div>
             <div>
               <Label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Icon</Label>
@@ -543,16 +541,13 @@ function ProjectsManager() {
               <Input value={formData.titleRu || ""} onChange={(e) => setFormData({ ...formData, titleRu: e.target.value })} />
             </div>
             <div className="sm:col-span-2">
-              <Label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Description (EN)</Label>
-              <Textarea rows={3} value={formData.description || ""} onChange={(e) => setFormData({ ...formData, description: e.target.value })} />
+              <RichTextEditor value={formData.description || ""} onChange={(html) => setFormData({ ...formData, description: html })} label="Description (EN)" testId="editor-project-desc-en" />
             </div>
-            <div>
-              <Label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Description (TR)</Label>
-              <Textarea rows={3} value={formData.descriptionTr || ""} onChange={(e) => setFormData({ ...formData, descriptionTr: e.target.value })} />
+            <div className="sm:col-span-2">
+              <RichTextEditor value={formData.descriptionTr || ""} onChange={(html) => setFormData({ ...formData, descriptionTr: html })} label="Description (TR)" testId="editor-project-desc-tr" />
             </div>
-            <div>
-              <Label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Description (RU)</Label>
-              <Textarea rows={3} value={formData.descriptionRu || ""} onChange={(e) => setFormData({ ...formData, descriptionRu: e.target.value })} />
+            <div className="sm:col-span-2">
+              <RichTextEditor value={formData.descriptionRu || ""} onChange={(html) => setFormData({ ...formData, descriptionRu: html })} label="Description (RU)" testId="editor-project-desc-ru" />
             </div>
             <div>
               <Label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Status</Label>
@@ -702,16 +697,13 @@ function NewsManager() {
               <Textarea rows={2} value={formData.excerpt || ""} onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })} />
             </div>
             <div className="sm:col-span-2">
-              <Label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Content (EN) - HTML supported</Label>
-              <Textarea rows={6} value={formData.content || ""} onChange={(e) => setFormData({ ...formData, content: e.target.value })} />
+              <RichTextEditor value={formData.content || ""} onChange={(html) => setFormData({ ...formData, content: html })} label="Content (EN)" testId="editor-news-content-en" />
             </div>
-            <div>
-              <Label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Content (TR)</Label>
-              <Textarea rows={4} value={formData.contentTr || ""} onChange={(e) => setFormData({ ...formData, contentTr: e.target.value })} />
+            <div className="sm:col-span-2">
+              <RichTextEditor value={formData.contentTr || ""} onChange={(html) => setFormData({ ...formData, contentTr: html })} label="Content (TR)" testId="editor-news-content-tr" />
             </div>
-            <div>
-              <Label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Content (RU)</Label>
-              <Textarea rows={4} value={formData.contentRu || ""} onChange={(e) => setFormData({ ...formData, contentRu: e.target.value })} />
+            <div className="sm:col-span-2">
+              <RichTextEditor value={formData.contentRu || ""} onChange={(html) => setFormData({ ...formData, contentRu: html })} label="Content (RU)" testId="editor-news-content-ru" />
             </div>
             <div>
               <Label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Author</Label>
