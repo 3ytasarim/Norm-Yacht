@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { updateSEO, SEO_DATA } from "@/lib/seo";
+import { updateSEO, getSEOData } from "@/lib/seo";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -28,8 +28,8 @@ export default function Contact() {
   const { toast } = useToast();
 
   useEffect(() => {
-    updateSEO(SEO_DATA.contact);
-  }, []);
+    updateSEO(getSEOData("contact", language));
+  }, [language]);
 
   const contactSchema = z.object({
     name: z.string().min(2, t.contact.validationName),

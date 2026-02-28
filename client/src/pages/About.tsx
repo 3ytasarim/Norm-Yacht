@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useLanguage } from "@/lib/languageContext";
 import { useTranslation } from "@/lib/i18n";
-import { updateSEO, SEO_DATA } from "@/lib/seo";
+import { updateSEO, getSEOData } from "@/lib/seo";
 import { CheckCircle, Target, Eye } from "lucide-react";
 import aboutImage from "@assets/about_1772246089936.jpg";
 
@@ -10,8 +10,8 @@ export default function About() {
   const t = useTranslation(language);
 
   useEffect(() => {
-    updateSEO(SEO_DATA.about);
-  }, []);
+    updateSEO(getSEOData("about", language));
+  }, [language]);
 
   const missionPoints = t.about.missionPoints;
 

@@ -17,6 +17,10 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     return (stored as Language) || "en";
   });
 
+  useEffect(() => {
+    document.documentElement.lang = language;
+  }, [language]);
+
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
     localStorage.setItem("norm-yacht-lang", lang);

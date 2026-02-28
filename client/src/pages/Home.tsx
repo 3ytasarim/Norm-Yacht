@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { updateSEO, SEO_DATA } from "@/lib/seo";
+import { updateSEO, getSEOData } from "@/lib/seo";
 import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/lib/languageContext";
@@ -484,9 +484,11 @@ function ContactCta() {
 }
 
 export default function Home() {
+  const { language } = useLanguage();
+
   useEffect(() => {
-    updateSEO(SEO_DATA.home);
-  }, []);
+    updateSEO(getSEOData("home", language));
+  }, [language]);
 
   return (
     <div>
