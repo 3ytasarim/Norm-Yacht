@@ -16,7 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import type { SliderItem, Service, Project, NewsItem, ContactMessage } from "@shared/schema";
+import type { SliderItem, Service, ServiceImage, Project, NewsItem, ContactMessage } from "@shared/schema";
 import logoPath from "@assets/logo-white.png";
 import RichTextEditor from "@/components/RichTextEditor";
 import {
@@ -24,7 +24,20 @@ import {
   Plus, Pencil, Trash2, Eye, Menu, X, Check, ChevronDown, ChevronRight, Upload, ImagePlus, Loader2
 } from "lucide-react";
 
-function ImageUpload({ value, onChange, label, testId }: { value: string; onChange: (url: string) => void; label: string; testId?: string }) {
+function slugify(input: string): string {
+  const trMap: Record<string, string> = { ç: "c", ğ: "g", ı: "i", ö: "o", ş: "s", ü: "u", İ: "i", Ç: "c", Ğ: "g", Ö: "o", Ş: "s", Ü: "u" };
+  return (input || "")
+    .split("")
+    .map((ch) => trMap[ch] ?? ch)
+    .join("")
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 60) || "genel";
+}
+
+function ImageUpload({ value, onChange, label, testId, folder }: { value: string; onChange: (url: string) => void; label: string; testId?: string; folder?: string }) {
   const fileRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
 
@@ -32,6 +45,7 @@ function ImageUpload({ value, onChange, label, testId }: { value: string; onChan
     setUploading(true);
     try {
       const formData = new FormData();
+      if (folder) formData.append("folder", folder);
       formData.append("file", file);
       const res = await fetch("/api/upload", { method: "POST", body: formData, credentials: "include" });
       if (!res.ok) throw new Error("Upload failed");
@@ -42,7 +56,7 @@ function ImageUpload({ value, onChange, label, testId }: { value: string; onChan
     } finally {
       setUploading(false);
     }
-  }, [onChange]);
+  }, [onChange, folder]);
 
   return (
     <div>
@@ -257,7 +271,7 @@ function SliderManager() {
               <Input value={formData.buttonTextRu || ""} onChange={(e) => setFormData({ ...formData, buttonTextRu: e.target.value })} />
             </div>
             <div className="sm:col-span-2">
-              <ImageUpload value={formData.rightImage || ""} onChange={(url) => setFormData({ ...formData, rightImage: url })} label="Slide Image" testId="upload-slider-image" />
+              <ImageUpload value={formData.rightImage || ""} onChange={(url) => setFormData({ ...formData, rightImage: url })} label="Slide Image" testId="upload-slider-image" folder={`slider/${slugify(formData.titleTr || formData.title)}`} />
             </div>
             <div>
               <Label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Background Color</Label>
@@ -292,6 +306,8 @@ function SliderManager() {
   );
 }
 
+const STABILIZER_BRANDS = ["Quantum", "Wespar", "Naiad", "ABT TRAC"];
+
 function ServicesManager() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -299,6 +315,12 @@ function ServicesManager() {
   const [editItem, setEditItem] = useState<Service | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState<any>({});
+
+  const { data: editingDetail } = useQuery<Service & { images: (ServiceImage & { brand?: string | null })[] }>({
+    queryKey: ["/api/services", editItem?.slug],
+    enabled: !!editItem?.slug && showForm,
+  });
+  const galleryImages = editingDetail?.images || [];
 
   const openEdit = (s: Service) => {
     setEditItem(s);
@@ -326,8 +348,18 @@ function ServicesManager() {
   });
 
   const addImageMutation = useMutation({
-    mutationFn: ({ id, url }: { id: number; url: string }) => apiRequest("POST", `/api/services/${id}/images`, { imageUrl: url }),
-    onSuccess: () => { toast({ title: "Image added" }); },
+    mutationFn: ({ id, url, brand }: { id: number; url: string; brand?: string }) => apiRequest("POST", `/api/services/${id}/images`, { imageUrl: url, brand: brand || null }),
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["/api/services"] }); toast({ title: "Image added" }); },
+  });
+
+  const updateImageBrandMutation = useMutation({
+    mutationFn: ({ id, brand }: { id: number; brand: string | null }) => apiRequest("PUT", `/api/service-images/${id}`, { brand }),
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["/api/services"] }); },
+  });
+
+  const deleteImageMutation = useMutation({
+    mutationFn: (id: number) => apiRequest("DELETE", `/api/service-images/${id}`, {}),
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["/api/services"] }); toast({ title: "Image removed" }); },
   });
 
   const iconOptions = ["Wrench", "Waves", "Navigation", "Settings", "Activity", "Gauge", "Hammer", "Zap", "Cog", "Anchor"];
@@ -407,18 +439,19 @@ function ServicesManager() {
               </Select>
             </div>
             <div>
-              <ImageUpload value={formData.image || ""} onChange={(url) => setFormData({ ...formData, image: url })} label="Card Image" testId="upload-service-card-image" />
+              <ImageUpload value={formData.image || ""} onChange={(url) => setFormData({ ...formData, image: url })} label="Card Image" testId="upload-service-card-image" folder={`services/${slugify(formData.slug || formData.title)}`} />
             </div>
             <div>
               <Label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Order</Label>
               <Input type="number" value={formData.order || 0} onChange={(e) => setFormData({ ...formData, order: parseInt(e.target.value) })} />
             </div>
-            {editItem && (
+            {editItem && formData.slug !== "stabilizers" && (
               <div className="sm:col-span-2">
                 <Label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Gallery Images</Label>
                 <MultiImageUpload uploading={addImageMutation.isPending} onUpload={async (files) => {
                   for (let i = 0; i < files.length; i++) {
                     const fd = new FormData();
+                    fd.append("folder", `services/${slugify(formData.slug || formData.title)}`);
                     fd.append("file", files[i]);
                     try {
                       const res = await fetch("/api/upload", { method: "POST", body: fd, credentials: "include" });
@@ -429,6 +462,81 @@ function ServicesManager() {
                     } catch (e) { console.error(e); }
                   }
                 }} />
+              </div>
+            )}
+            {editItem && formData.slug === "stabilizers" && (
+              <div className="sm:col-span-2 space-y-5">
+                <Label className="text-xs font-bold text-gray-500 uppercase block">Brand Galleries (Quantum / Wespar / Naiad / ABT TRAC)</Label>
+                {STABILIZER_BRANDS.map((brand) => {
+                  const brandImages = galleryImages.filter((img) => img.brand === brand);
+                  return (
+                    <div key={brand} className="border border-gray-200 rounded-lg p-3">
+                      <div className="font-bold text-sm text-gray-800 mb-2">{brand}</div>
+                      {brandImages.length > 0 && (
+                        <div className="flex flex-wrap gap-2 mb-2">
+                          {brandImages.map((img) => (
+                            <div key={img.id} className="relative group w-16 h-16">
+                              <img src={img.imageUrl} alt={brand} className="w-full h-full object-cover rounded border border-gray-200" />
+                              <button
+                                type="button"
+                                onClick={() => deleteImageMutation.mutate(img.id)}
+                                className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-red-500 hover:bg-red-600 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                              >
+                                <X className="w-3 h-3" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      <MultiImageUpload uploading={addImageMutation.isPending} onUpload={async (files) => {
+                        for (let i = 0; i < files.length; i++) {
+                          const fd = new FormData();
+                          fd.append("folder", `services/stabilizers/${slugify(brand)}`);
+                          fd.append("file", files[i]);
+                          try {
+                            const res = await fetch("/api/upload", { method: "POST", body: fd, credentials: "include" });
+                            if (res.ok) {
+                              const data = await res.json();
+                              await addImageMutation.mutateAsync({ id: editItem.id, url: data.url, brand });
+                            }
+                          } catch (e) { console.error(e); }
+                        }
+                      }} />
+                    </div>
+                  );
+                })}
+                {(() => {
+                  const unassigned = galleryImages.filter((img) => !img.brand);
+                  if (unassigned.length === 0) return null;
+                  return (
+                    <div className="border border-dashed border-amber-300 bg-amber-50 rounded-lg p-3">
+                      <div className="font-bold text-sm text-amber-800 mb-1">Unassigned (legacy) — {unassigned.length} images</div>
+                      <p className="text-xs text-amber-700 mb-2">These were uploaded before brand galleries existed. Assign each to a brand, or delete it. They won't show on the site until assigned.</p>
+                      <div className="flex flex-wrap gap-3">
+                        {unassigned.map((img) => (
+                          <div key={img.id} className="w-20">
+                            <img src={img.imageUrl} alt="unassigned" className="w-20 h-16 object-cover rounded border border-gray-200 mb-1" />
+                            <select
+                              className="w-full text-xs border border-gray-300 rounded px-1 py-0.5 mb-1"
+                              defaultValue=""
+                              onChange={(e) => { if (e.target.value) updateImageBrandMutation.mutate({ id: img.id, brand: e.target.value }); }}
+                            >
+                              <option value="" disabled>Assign…</option>
+                              {STABILIZER_BRANDS.map((b) => <option key={b} value={b}>{b}</option>)}
+                            </select>
+                            <button
+                              type="button"
+                              onClick={() => deleteImageMutation.mutate(img.id)}
+                              className="w-full text-xs text-red-600 hover:text-red-800"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })()}
               </div>
             )}
           </div>
@@ -572,7 +680,7 @@ function ProjectsManager() {
               <Input value={formData.completionDate || ""} onChange={(e) => setFormData({ ...formData, completionDate: e.target.value })} placeholder="2024-12" />
             </div>
             <div className="sm:col-span-2">
-              <ImageUpload value={formData.mainImage || ""} onChange={(url) => setFormData({ ...formData, mainImage: url })} label="Main Image" testId="upload-project-main-image" />
+              <ImageUpload value={formData.mainImage || ""} onChange={(url) => setFormData({ ...formData, mainImage: url })} label="Main Image" testId="upload-project-main-image" folder={`projects/${slugify(formData.slug || formData.title)}`} />
             </div>
             {editItem && (
               <div className="sm:col-span-2">
@@ -580,6 +688,7 @@ function ProjectsManager() {
                 <MultiImageUpload uploading={addImageMutation.isPending} onUpload={async (files) => {
                   for (let i = 0; i < files.length; i++) {
                     const fd = new FormData();
+                    fd.append("folder", `projects/${slugify(formData.slug || formData.title)}`);
                     fd.append("file", files[i]);
                     try {
                       const res = await fetch("/api/upload", { method: "POST", body: fd, credentials: "include" });
@@ -714,7 +823,7 @@ function NewsManager() {
               <Input value={formData.tags || ""} onChange={(e) => setFormData({ ...formData, tags: e.target.value })} placeholder="Marine, Hydraulics" data-testid="input-news-tags" />
             </div>
             <div className="sm:col-span-2">
-              <ImageUpload value={formData.image || ""} onChange={(url) => setFormData({ ...formData, image: url })} label="Article Image" testId="upload-news-image" />
+              <ImageUpload value={formData.image || ""} onChange={(url) => setFormData({ ...formData, image: url })} label="Article Image" testId="upload-news-image" folder={`news/${slugify(formData.slug || formData.title)}`} />
             </div>
           </div>
           <DialogFooter>

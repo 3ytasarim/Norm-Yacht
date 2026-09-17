@@ -14,9 +14,32 @@ import fs from "fs";
 const uploadsDir = path.resolve(process.cwd(), "uploads");
 if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
 
+// Keeps upload subfolders (e.g. "services/stabilizers") confined to uploadsDir:
+// strips anything but a-z0-9/-, collapses repeats, and caps depth at 2 segments.
+function sanitizeFolder(folder: unknown): string {
+  if (typeof folder !== "string" || !folder) return "";
+  return folder
+    .split("/")
+    .map((seg) =>
+      seg
+        .toLowerCase()
+        .replace(/[^a-z0-9-]+/g, "-")
+        .replace(/-+/g, "-")
+        .replace(/^-|-$/g, "")
+    )
+    .filter(Boolean)
+    .slice(0, 2)
+    .join("/");
+}
+
 const upload = multer({
   storage: multer.diskStorage({
-    destination: (_req, _file, cb) => cb(null, uploadsDir),
+    destination: (req, _file, cb) => {
+      const folder = sanitizeFolder((req.body as any)?.folder);
+      const dir = folder ? path.join(uploadsDir, folder) : uploadsDir;
+      fs.mkdirSync(dir, { recursive: true });
+      cb(null, dir);
+    },
     filename: (_req, file, cb) => {
       const ext = path.extname(file.originalname);
       const name = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}${ext}`;
@@ -225,13 +248,17 @@ export async function registerRoutes(httpServer: any, app: Express): Promise<Ser
 
   app.post("/api/upload", requireAdmin, upload.single("file"), (req: any, res) => {
     if (!req.file) return res.status(400).json({ message: "No file uploaded" });
-    const url = `/uploads/${req.file.filename}`;
+    const relPath = path.relative(uploadsDir, req.file.path).split(path.sep).join("/");
+    const url = `/uploads/${relPath}`;
     res.json({ url, filename: req.file.filename });
   });
 
   app.post("/api/upload/multiple", requireAdmin, upload.array("files", 20), (req: any, res) => {
     if (!req.files || req.files.length === 0) return res.status(400).json({ message: "No files uploaded" });
-    const urls = req.files.map((f: any) => ({ url: `/uploads/${f.filename}`, filename: f.filename }));
+    const urls = req.files.map((f: any) => {
+      const relPath = path.relative(uploadsDir, f.path).split(path.sep).join("/");
+      return { url: `/uploads/${relPath}`, filename: f.filename };
+    });
     res.json(urls);
   });
 
@@ -289,7 +316,18 @@ export async function registerRoutes(httpServer: any, app: Express): Promise<Ser
   });
 
   app.post("/api/services/:id/images", requireAdmin, async (req, res) => {
-    const image = await storage.addServiceImage({ serviceId: parseInt(req.params.id), imageUrl: req.body.imageUrl, order: req.body.order || 0 });
+    const image = await storage.addServiceImage({
+      serviceId: parseInt(req.params.id),
+      imageUrl: req.body.imageUrl,
+      order: req.body.order || 0,
+      brand: req.body.brand || null,
+    });
+    res.json(image);
+  });
+
+  app.put("/api/service-images/:id", requireAdmin, async (req, res) => {
+    const image = await storage.updateServiceImage(parseInt(req.params.id), { brand: req.body.brand ?? null });
+    if (!image) return res.status(404).json({ message: "Not found" });
     res.json(image);
   });
 
