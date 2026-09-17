@@ -47,6 +47,7 @@ export const serviceImages = pgTable("service_images", {
   serviceId: integer("service_id").notNull(),
   imageUrl: text("image_url").notNull(),
   order: integer("order").default(0),
+  brand: text("brand"),
 });
 
 export const projects = pgTable("projects", {

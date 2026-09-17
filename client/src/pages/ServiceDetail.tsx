@@ -6,13 +6,17 @@ import { useTranslation } from "@/lib/i18n";
 import { updateSEO } from "@/lib/seo";
 import { getPath } from "@/lib/routes";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowLeft, ChevronLeft, ChevronRight, Wrench, Waves, Navigation, Settings, Activity, Gauge, Hammer, Zap, Cog, Anchor, ZoomIn } from "lucide-react";
+import { ArrowLeft, ChevronLeft, ChevronRight, Wrench, Waves, Navigation, Settings, Activity, Gauge, Hammer, Zap, Cog, Anchor, ZoomIn, ImageOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ImageLightbox from "@/components/ImageLightbox";
 
 const iconMap: Record<string, any> = {
   Waves, Anchor, Navigation, Settings, Activity, Gauge, Hammer, Zap, Cog, Wrench, Crane: Anchor,
 };
+
+const STABILIZER_BRANDS = ["Quantum", "Wespar", "Naiad", "ABT TRAC"];
+
+type ServiceImg = { id: number; imageUrl: string; order: number; brand?: string | null };
 
 type ServiceWithImages = {
   id: number;
@@ -26,8 +30,97 @@ type ServiceWithImages = {
   icon?: string | null;
   order?: number | null;
   active?: boolean | null;
-  images: { id: number; imageUrl: string; order: number }[];
+  images: ServiceImg[];
 };
+
+function BrandGallery({ brand, images, galleryLabel, comingSoonLabel }: { brand: string; images: ServiceImg[]; galleryLabel: string; comingSoonLabel: string }) {
+  const [index, setIndex] = useState(0);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const autoRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const count = images.length;
+
+  useEffect(() => {
+    if (count <= 1) return;
+    autoRef.current = setInterval(() => setIndex((p) => (p + 1) % count), 4000);
+    return () => { if (autoRef.current) clearInterval(autoRef.current); };
+  }, [count]);
+
+  const stopAuto = () => { if (autoRef.current) clearInterval(autoRef.current); };
+
+  if (count === 0) {
+    return (
+      <div className="border border-gray-100 rounded-lg overflow-hidden bg-white">
+        <div className="px-4 py-3 border-b border-gray-100">
+          <h4 className="font-black text-gray-900 text-sm">{brand}</h4>
+        </div>
+        <div className="h-48 flex flex-col items-center justify-center gap-2 bg-gray-50 text-gray-400">
+          <ImageOff className="w-6 h-6" />
+          <span className="text-xs font-medium">{comingSoonLabel}</span>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="border border-gray-100 rounded-lg overflow-hidden bg-white" data-testid={`gallery-brand-${brand.toLowerCase().replace(/\s+/g, "-")}`}>
+      <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
+        <h4 className="font-black text-gray-900 text-sm">{brand}</h4>
+        <span className="text-xs text-gray-400">{galleryLabel}</span>
+      </div>
+      <div
+        className="relative bg-gray-100 group cursor-pointer"
+        style={{ height: "260px" }}
+        onClick={() => { stopAuto(); setLightboxOpen(true); }}
+      >
+        <img
+          src={images[index]?.imageUrl}
+          alt={`${brand} ${index + 1}`}
+          className="w-full h-full object-contain"
+        />
+        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+          <ZoomIn className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-lg" />
+        </div>
+        {count > 1 && (
+          <>
+            <button
+              onClick={(e) => { e.stopPropagation(); stopAuto(); setIndex((p) => (p - 1 + count) % count); }}
+              className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-black/40 hover:bg-[#F5A623] flex items-center justify-center text-white transition-colors"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+            <button
+              onClick={(e) => { e.stopPropagation(); stopAuto(); setIndex((p) => (p + 1) % count); }}
+              className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-black/40 hover:bg-[#F5A623] flex items-center justify-center text-white transition-colors"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </>
+        )}
+      </div>
+      {count > 1 && (
+        <div className="flex gap-2 p-3 flex-wrap">
+          {images.map((img, i) => (
+            <button
+              key={img.id}
+              onClick={() => { stopAuto(); setIndex(i); }}
+              className={`w-12 h-10 rounded overflow-hidden border-2 transition-all ${i === index ? "border-[#F5A623]" : "border-transparent opacity-70 hover:opacity-100"}`}
+            >
+              <img src={img.imageUrl} alt={`${brand} thumb ${i + 1}`} className="w-full h-full object-cover" />
+            </button>
+          ))}
+        </div>
+      )}
+      {lightboxOpen && (
+        <ImageLightbox
+          images={images}
+          currentIndex={index}
+          onClose={() => setLightboxOpen(false)}
+          onNavigate={(i) => setIndex(i)}
+        />
+      )}
+    </div>
+  );
+}
 
 export default function ServiceDetail() {
   const [, paramsEn] = useRoute("/services/:slug");
@@ -122,7 +215,7 @@ export default function ServiceDetail() {
                 dangerouslySetInnerHTML={{ __html: description || "" }}
               />
 
-              {service.images && service.images.length > 0 && (
+              {service.slug !== "stabilizers" && service.images && service.images.length > 0 && (
                 <div className="mt-10">
                   <h3 className="text-xl font-black text-gray-900 mb-5">{t.services.gallery}</h3>
                   <div className="relative rounded-lg overflow-hidden bg-gray-100 mb-4 group cursor-pointer" style={{ height: "500px" }} onClick={() => { stopAuto(); setLightboxOpen(true); }}>
@@ -199,6 +292,23 @@ export default function ServiceDetail() {
               </div>
             </div>
           </div>
+
+          {service.slug === "stabilizers" && (
+            <div className="mt-14">
+              <h3 className="text-xl font-black text-gray-900 mb-5">{t.services.gallery}</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {STABILIZER_BRANDS.map((brand) => (
+                  <BrandGallery
+                    key={brand}
+                    brand={brand}
+                    images={service.images.filter((img) => img.brand === brand)}
+                    galleryLabel={t.services.gallery}
+                    comingSoonLabel={t.services.galleryComingSoon}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </section>
 

@@ -34,6 +34,7 @@ export interface IStorage {
   deleteService(id: number): Promise<void>;
   getServiceImages(serviceId: number): Promise<ServiceImage[]>;
   addServiceImage(image: InsertServiceImage): Promise<ServiceImage>;
+  updateServiceImage(id: number, image: Partial<InsertServiceImage>): Promise<ServiceImage | undefined>;
   deleteServiceImage(id: number): Promise<void>;
 
   // Projects
@@ -137,6 +138,11 @@ export class DatabaseStorage implements IStorage {
   async addServiceImage(image: InsertServiceImage): Promise<ServiceImage> {
     const [created] = await db.insert(serviceImages).values(image).returning();
     return created;
+  }
+
+  async updateServiceImage(id: number, image: Partial<InsertServiceImage>): Promise<ServiceImage | undefined> {
+    const [updated] = await db.update(serviceImages).set(image).where(eq(serviceImages.id, id)).returning();
+    return updated;
   }
 
   async deleteServiceImage(id: number): Promise<void> {
