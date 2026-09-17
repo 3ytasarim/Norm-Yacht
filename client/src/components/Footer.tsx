@@ -105,7 +105,7 @@ export default function Footer() {
               <li className="flex items-start gap-3">
                 <MapPin className="w-4 h-4 text-[#F5A623] flex-shrink-0 mt-0.5" />
                 <span className="text-gray-400 text-sm leading-relaxed">
-                  İstasyon Mahallesi Yarış Çıkmazı Sokak, İstim Sanayi Sitesi No 17/153, Tuzla, İstanbul
+                  İstasyon Mahallesi Yarış Çıkmazı Sokak, İstim Sanayi Sitesi No 1/153, Tuzla, İstanbul
                 </span>
               </li>
               <li className="flex items-center gap-3">

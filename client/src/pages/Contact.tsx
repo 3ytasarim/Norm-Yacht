@@ -61,7 +61,7 @@ export default function Contact() {
     {
       icon: MapPin,
       label: t.contact.address,
-      value: "İstasyon Mahallesi Yarış Çıkmazı Sokak, İstim Sanayi Sitesi No 17/153, Tuzla, İstanbul",
+      value: "İstasyon Mahallesi Yarış Çıkmazı Sokak, İstim Sanayi Sitesi No 1/153, Tuzla, İstanbul",
     },
     {
       icon: Phone,

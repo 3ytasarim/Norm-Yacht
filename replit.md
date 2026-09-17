@@ -57,7 +57,7 @@ Full-featured multilingual corporate website for Norm Yat, a marine engineering 
 - `/contact` — Contact form + Google Maps embed
 
 ## Contact Info
-- Address: İstasyon Mahallesi Yarış Çıkmazı Sokak, İstim Sanayi Sitesi No 17/153, Tuzla, İstanbul
+- Address: İstasyon Mahallesi Yarış Çıkmazı Sokak, İstim Sanayi Sitesi No 1/153, Tuzla, İstanbul
 - Phone: 0216 510 66 76
 - Email: info@normyacht.com.tr
 
