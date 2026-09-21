@@ -70,7 +70,7 @@ type SEODataMap = Record<string, SEOEntry>;
 
 const SEO_DATA_EN: SEODataMap = {
   home: {
-    title: "Norm Yacht | Yacht Stabilizer Systems & Marine Hydraulic Engineering - Tuzla, Istanbul",
+    title: "NormYacht",
     description: "Norm Yacht provides professional superyacht engineering, yacht stabilizer installation, marine hydraulic systems, and turnkey refit solutions. Based in Tuzla, Istanbul — Turkey's leading shipyard hub.",
     keywords: "yacht stabilizer, yacht stabilizer installation, marine hydraulic systems, superyacht engineering, yacht refit Istanbul, Tuzla shipyard, Quantum stabilizer service, Norm Yacht",
   },
@@ -103,7 +103,7 @@ const SEO_DATA_EN: SEODataMap = {
 
 const SEO_DATA_TR: SEODataMap = {
   home: {
-    title: "Norm Yacht | Yat Stabilizatör Sistemleri ve Deniz Hidrolik Mühendisliği - Tuzla, İstanbul",
+    title: "NormYacht",
     description: "Norm Yacht, profesyonel süper yat mühendisliği, yat stabilizatör kurulumu, deniz hidrolik sistemleri ve anahtar teslimi refit çözümleri sunmaktadır. Türkiye'nin önde gelen tersane merkezi Tuzla, İstanbul'da.",
     keywords: "yat stabilizatör, yat stabilizatör kurulumu, deniz hidrolik sistemleri, süper yat mühendisliği, yat refit İstanbul, Tuzla tersane, Quantum stabilizatör servis, Norm Yacht",
   },
@@ -136,7 +136,7 @@ const SEO_DATA_TR: SEODataMap = {
 
 const SEO_DATA_RU: SEODataMap = {
   home: {
-    title: "Norm Yacht | Системы стабилизации яхт и морская гидравлическая инженерия - Тузла, Стамбул",
+    title: "NormYacht",
     description: "Norm Yacht предоставляет профессиональные услуги инженерии суперяхт, установку стабилизаторов яхт, морские гидравлические системы и комплексные решения для рефита. Тузла, Стамбул — ведущий судостроительный центр Турции.",
     keywords: "стабилизатор яхты, установка стабилизатора яхты, морские гидравлические системы, инженерия суперяхт, рефит яхт Стамбул, верфь Тузла, Norm Yacht",
   },

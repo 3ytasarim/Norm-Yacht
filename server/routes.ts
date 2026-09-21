@@ -286,6 +286,83 @@ export async function registerRoutes(httpServer: any, app: Express): Promise<Ser
   });
 
   // --- SERVICES ---
+  app.get("/sitemap.xml", async (_req, res) => {
+    try {
+      const [services, projects, newsItems] = await Promise.all([
+        storage.getServices(),
+        storage.getProjects(),
+        storage.getNewsItems(),
+      ]);
+
+      const base = "https://normyacht.com";
+
+      const urls = new Set<string>([
+        "/",
+        "/about",
+        "/hakkimizda",
+        "/o-nas",
+        "/services",
+        "/hizmetler",
+        "/uslugi",
+        "/projects",
+        "/projeler",
+        "/proekty",
+        "/news",
+        "/haberler",
+        "/novosti",
+        "/contact",
+        "/iletisim",
+        "/kontakty",
+      ]);
+
+      for (const item of services) {
+        if (!item.slug) continue;
+        urls.add(`/services/${item.slug}`);
+        urls.add(`/hizmetler/${item.slug}`);
+        urls.add(`/uslugi/${item.slug}`);
+      }
+
+      for (const item of projects) {
+        if (!item.slug) continue;
+        urls.add(`/projects/${item.slug}`);
+        urls.add(`/projeler/${item.slug}`);
+        urls.add(`/proekty/${item.slug}`);
+      }
+
+      for (const item of newsItems) {
+        if (!item.slug) continue;
+        urls.add(`/news/${item.slug}`);
+        urls.add(`/haberler/${item.slug}`);
+        urls.add(`/novosti/${item.slug}`);
+      }
+
+      const escapeXml = (value: string) =>
+        value
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&apos;");
+
+      const xml =
+        '<?xml version="1.0" encoding="UTF-8"?>\n' +
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
+        Array.from(urls)
+          .map((url) => `  <url><loc>${escapeXml(base + url)}</loc></url>`)
+          .join("\n") +
+        '\n</urlset>\n';
+
+      res
+        .status(200)
+        .type("application/xml")
+        .set("Cache-Control", "public, max-age=3600")
+        .send(xml);
+    } catch (error) {
+      console.error("Sitemap generation failed:", error);
+      res.status(500).type("text/plain").send("Unable to generate sitemap");
+    }
+  });
+
   app.get("/api/services", async (req, res) => {
     const items = await storage.getServices();
     res.json(items);

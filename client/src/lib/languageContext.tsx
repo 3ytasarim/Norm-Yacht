@@ -12,13 +12,26 @@ const LanguageContext = createContext<LanguageContextType>({
   setLanguage: () => {},
 });
 
-export function LanguageProvider({ children }: { children: ReactNode }) {
+export function LanguageProvider({
+  children,
+  initialLanguage,
+}: {
+  children: ReactNode;
+  initialLanguage?: Language;
+}) {
   const [language, setLanguageState] = useState<Language>(() => {
+    if (initialLanguage) return initialLanguage;
+
+    if (typeof window === "undefined") {
+      return "en";
+    }
+
     const pathLang = detectLanguageFromPath(window.location.pathname);
     if (pathLang) {
       localStorage.setItem("norm-yacht-lang", pathLang);
       return pathLang;
     }
+
     const stored = localStorage.getItem("norm-yacht-lang");
     return (stored as Language) || "en";
   });
@@ -29,6 +42,9 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
+
+    if (typeof window === "undefined") return;
+
     localStorage.setItem("norm-yacht-lang", lang);
     const currentPath = window.location.pathname;
     const newPath = getEquivalentPath(currentPath, lang);

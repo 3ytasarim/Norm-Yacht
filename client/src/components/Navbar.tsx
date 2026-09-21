@@ -304,7 +304,7 @@ export default function Navbar() {
           <div className="lg:hidden bg-white border-t border-gray-100 shadow-lg">
             <div className="px-4 py-4 space-y-1">
               {[...navLinks, ...navLinksRight].map((link) =>
-                link.hasDropdown ? (
+                ("hasDropdown" in link && link.hasDropdown) ? (
                   <div key={link.href}>
                     <button
                       className="w-full flex items-center justify-between py-3 px-3 text-sm font-semibold uppercase tracking-wide text-gray-700 hover:text-[#F5A623] hover:bg-orange-50 rounded-md transition-colors"
