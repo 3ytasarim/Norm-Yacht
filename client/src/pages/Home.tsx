@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { ChevronLeft, ChevronRight, ArrowRight, Anchor, Waves, Award, Users, Calendar, Wrench, Navigation, Settings, Activity, Gauge, Hammer, Zap, Cog } from "lucide-react";
-import aboutImage from "@assets/about_1772246089936.jpg";
+import aboutImage from "@assets/about_1772246089936.webp";
 
 function stripHtml(html: string | null | undefined): string {
   if (!html) return "";
@@ -236,6 +236,10 @@ function AboutSection() {
               <img
                 src={aboutImage}
                 alt="Norm Yacht - Since 2019 Tuzla, Istanbul"
+                width={1200}
+                height={900}
+                loading="lazy"
+                decoding="async"
                 className="w-full h-auto"
               />
             </div>

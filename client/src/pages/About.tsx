@@ -3,7 +3,7 @@ import { useLanguage } from "@/lib/languageContext";
 import { useTranslation } from "@/lib/i18n";
 import { updateSEO, getSEOData } from "@/lib/seo";
 import { CheckCircle, Target, Eye } from "lucide-react";
-import aboutImage from "@assets/about_1772246089936.jpg";
+import aboutImage from "@assets/about_1772246089936.webp";
 
 export default function About() {
   const { language } = useLanguage();
@@ -42,6 +42,10 @@ export default function About() {
                 <img
                   src={aboutImage}
                   alt="Norm Yacht workshop - Tuzla, Istanbul"
+                  width={1200}
+                  height={900}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-auto"
                 />
               </div>
