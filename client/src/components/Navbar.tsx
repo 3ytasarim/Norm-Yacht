@@ -5,7 +5,7 @@ import { useLanguage } from "@/lib/languageContext";
 import { useTranslation } from "@/lib/i18n";
 import type { Service } from "@shared/schema";
 import { getPath, getServicePath } from "@/lib/routes";
-import logoPath from "@assets/logo-transparent.png";
+import logoPath from "@assets/logo-transparent.webp";
 import { Menu, X, ChevronDown, Youtube, Instagram, Linkedin, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -205,6 +205,9 @@ export default function Navbar() {
                 <img
                   src={logoPath}
                   alt="Norm Yacht"
+                  width={600}
+                  height={177}
+                  decoding="async"
                   className="h-14 w-auto object-contain cursor-pointer"
                   data-testid="logo-main"
                 />
