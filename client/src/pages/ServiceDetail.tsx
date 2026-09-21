@@ -14,7 +14,7 @@ const iconMap: Record<string, any> = {
   Waves, Anchor, Navigation, Settings, Activity, Gauge, Hammer, Zap, Cog, Wrench, Crane: Anchor,
 };
 
-const STABILIZER_BRANDS = ["Quantum", "Wespar", "Naiad", "ABT TRAC"];
+const STABILIZER_BRANDS = ["Quantum", "Wesmar", "Naiad", "ABT TRAC"];
 
 type ServiceImg = { id: number; imageUrl: string; order: number; brand?: string | null };
 

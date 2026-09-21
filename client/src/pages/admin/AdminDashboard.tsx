@@ -306,7 +306,7 @@ function SliderManager() {
   );
 }
 
-const STABILIZER_BRANDS = ["Quantum", "Wespar", "Naiad", "ABT TRAC"];
+const STABILIZER_BRANDS = ["Quantum", "Wesmar", "Naiad", "ABT TRAC"];
 
 function ServicesManager() {
   const { toast } = useToast();
@@ -466,7 +466,7 @@ function ServicesManager() {
             )}
             {editItem && formData.slug === "stabilizers" && (
               <div className="sm:col-span-2 space-y-5">
-                <Label className="text-xs font-bold text-gray-500 uppercase block">Brand Galleries (Quantum / Wespar / Naiad / ABT TRAC)</Label>
+                <Label className="text-xs font-bold text-gray-500 uppercase block">Brand Galleries (Quantum / Wesmar / Naiad / ABT TRAC)</Label>
                 {STABILIZER_BRANDS.map((brand) => {
                   const brandImages = galleryImages.filter((img) => img.brand === brand);
                   return (
