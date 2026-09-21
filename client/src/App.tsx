@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { Switch, Route, Router as WouterRouter } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import {
@@ -23,8 +23,8 @@ import ProjectDetail from "@/pages/ProjectDetail";
 import News from "@/pages/News";
 import NewsDetail from "@/pages/NewsDetail";
 import Contact from "@/pages/Contact";
-import AdminLogin from "@/pages/admin/AdminLogin";
-import AdminDashboard from "@/pages/admin/AdminDashboard";
+const AdminLogin = lazy(() => import("@/pages/admin/AdminLogin"));
+const AdminDashboard = lazy(() => import("@/pages/admin/AdminDashboard"));
 import { useLocation } from "wouter";
 import type { Language } from "@/lib/i18n";
 
@@ -89,8 +89,16 @@ function Router() {
         <Route path="/iletisim" component={Contact} />
         <Route path="/kontakty" component={Contact} />
 
-        <Route path="/admin" component={AdminLogin} />
-        <Route path="/admin/dashboard" component={AdminDashboard} />
+        <Route path="/admin">
+          <Suspense fallback={null}>
+            <AdminLogin />
+          </Suspense>
+        </Route>
+        <Route path="/admin/dashboard">
+          <Suspense fallback={null}>
+            <AdminDashboard />
+          </Suspense>
+        </Route>
         <Route component={NotFound} />
       </Switch>
     </Layout>
