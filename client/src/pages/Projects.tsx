@@ -91,7 +91,7 @@ export default function Projects() {
   const { data: allProjects = [], isLoading } = useQuery<Project[]>({ queryKey: ["/api/projects"] });
 
   useEffect(() => {
-    updateSEO(getSEOData("projects", language));
+    updateSEO({ ...getSEOData("projects", language), language });
   }, [language]);
 
   const completed = allProjects.filter((p) => p.status === "completed");

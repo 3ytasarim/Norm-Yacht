@@ -23,15 +23,95 @@ type SSRModule = {
   }): RenderResult;
 };
 
+type SEOAlternate = {
+  hreflang: "en" | "tr" | "ru" | "x-default";
+  href: string;
+};
+
 type SEOResult = {
   title: string;
   description: string;
   keywords: string;
   canonical: string;
   ogImage: string;
+  ogLocale: "en_US" | "tr_TR" | "ru_RU";
+  alternates: SEOAlternate[];
 };
 
 const SITE_URL = "https://normyacht.com";
+
+const OG_LOCALES: Record<Language, "en_US" | "tr_TR" | "ru_RU"> = {
+  en: "en_US",
+  tr: "tr_TR",
+  ru: "ru_RU",
+};
+
+const STATIC_ALTERNATE_PATHS: Record<
+  string,
+  Record<Language, string>
+> = {
+  home: {
+    en: "/",
+    tr: "",
+    ru: "",
+  },
+  about: {
+    en: "/about",
+    tr: "/hakkimizda",
+    ru: "/o-nas",
+  },
+  services: {
+    en: "/services",
+    tr: "/hizmetler",
+    ru: "/uslugi",
+  },
+  projects: {
+    en: "/projects",
+    tr: "/projeler",
+    ru: "/proekty",
+  },
+  news: {
+    en: "/news",
+    tr: "/haberler",
+    ru: "/novosti",
+  },
+  contact: {
+    en: "/contact",
+    tr: "/iletisim",
+    ru: "/kontakty",
+  },
+};
+
+function absoluteUrl(pathname: string): string {
+  return `${SITE_URL}${pathname === "/" ? "/" : pathname.replace(/\/$/, "")}`;
+}
+
+function buildAlternates(
+  paths: Partial<Record<Language, string>>,
+): SEOAlternate[] {
+  const result: SEOAlternate[] = [];
+
+  for (const language of ["en", "tr", "ru"] as const) {
+    const pathname = paths[language];
+    if (!pathname) continue;
+
+    result.push({
+      hreflang: language,
+      href: absoluteUrl(pathname),
+    });
+  }
+
+  const defaultPath = paths.en;
+
+  if (defaultPath) {
+    result.push({
+      hreflang: "x-default",
+      href: absoluteUrl(defaultPath),
+    });
+  }
+
+  return result;
+}
 
 function escapeHtml(value: unknown): string {
   return String(value ?? "")
@@ -96,12 +176,19 @@ function getBaseSEO(pathname: string, language: Language): SEOResult {
 
   const data = getSEOData(page, language);
 
+  const alternatePaths =
+    STATIC_ALTERNATE_PATHS[page] || {
+      [language]: pathname,
+    };
+
   return {
     title: data.title,
     description: data.description,
     keywords: data.keywords,
-    canonical: `${SITE_URL}${pathname === "/" ? "/" : pathname.replace(/\/$/, "")}`,
+    canonical: absoluteUrl(pathname),
     ogImage: `${SITE_URL}/og-image.jpg`,
+    ogLocale: OG_LOCALES[language],
+    alternates: buildAlternates(alternatePaths),
   };
 }
 
@@ -151,10 +238,21 @@ export async function renderPublicPage(pathname: string) {
         stripHtml(localizedField(service, "description", language)),
       );
 
+      const serviceAlternatePaths: Partial<Record<Language, string>> = {
+        en: `/services/${slug}`,
+        tr: service.titleTr && service.descriptionTr
+          ? `/hizmetler/${slug}`
+          : undefined,
+        ru: service.titleRu && service.descriptionRu
+          ? `/uslugi/${slug}`
+          : undefined,
+      };
+
       seo = {
         ...seo,
         title: `${title} | NormYacht`,
         description: description || seo.description,
+        alternates: buildAlternates(serviceAlternatePaths),
         ogImage: service.image
           ? service.image.startsWith("http")
             ? service.image
@@ -185,10 +283,21 @@ export async function renderPublicPage(pathname: string) {
         stripHtml(localizedField(project, "description", language)),
       );
 
+      const projectAlternatePaths: Partial<Record<Language, string>> = {
+        en: `/projects/${slug}`,
+        tr: project.titleTr && project.descriptionTr
+          ? `/projeler/${slug}`
+          : undefined,
+        ru: project.titleRu && project.descriptionRu
+          ? `/proekty/${slug}`
+          : undefined,
+      };
+
       seo = {
         ...seo,
         title: `${title} | NormYacht`,
         description: description || seo.description,
+        alternates: buildAlternates(projectAlternatePaths),
         ogImage: project.mainImage
           ? project.mainImage.startsWith("http")
             ? project.mainImage
@@ -218,10 +327,21 @@ export async function renderPublicPage(pathname: string) {
         localizedField(item, "excerpt", language) ||
         localizedField(item, "content", language);
 
+      const newsAlternatePaths: Partial<Record<Language, string>> = {
+        en: `/news/${slug}`,
+        tr: item.titleTr && item.contentTr
+          ? `/haberler/${slug}`
+          : undefined,
+        ru: item.titleRu && item.contentRu
+          ? `/novosti/${slug}`
+          : undefined,
+      };
+
       seo = {
         ...seo,
         title: `${title} | NormYacht`,
         description: truncate(stripHtml(excerpt)) || seo.description,
+        alternates: buildAlternates(newsAlternatePaths),
         ogImage: item.image
           ? item.image.startsWith("http")
             ? item.image
@@ -280,6 +400,32 @@ export async function renderPublicPage(pathname: string) {
   );
 
   template = template.replace(
+    /<meta property="og:locale" content="[^"]*" \/>/,
+    `<meta property="og:locale" content="${escapeHtml(seo.ogLocale)}" />`,
+  );
+
+  template = template.replace(
+    /\s*<meta property="og:locale:alternate" content="[^"]*" \/>/g,
+    "",
+  );
+
+  const alternateLocales = (
+    ["en_US", "tr_TR", "ru_RU"] as const
+  ).filter((locale) => locale !== seo.ogLocale);
+
+  const alternateLocaleTags = alternateLocales
+    .map(
+      (locale) =>
+        `    <meta property="og:locale:alternate" content="${locale}" />`,
+    )
+    .join("\n");
+
+  template = template.replace(
+    /(<meta property="og:locale" content="[^"]*" \/>)/,
+    `$1\n${alternateLocaleTags}`,
+  );
+
+  template = template.replace(
     /<meta property="og:image" content="[^"]*" \/>/,
     `<meta property="og:image" content="${escapeHtml(seo.ogImage)}" />`,
   );
@@ -302,6 +448,23 @@ export async function renderPublicPage(pathname: string) {
   template = template.replace(
     /<link rel="canonical" href="[^"]*" \/>/,
     `<link rel="canonical" href="${escapeHtml(seo.canonical)}" />`,
+  );
+
+  template = template.replace(
+    /\s*<link rel="alternate" hreflang="[^"]+" href="[^"]+" \/>/g,
+    "",
+  );
+
+  const hreflangTags = seo.alternates
+    .map(
+      ({ hreflang, href }) =>
+        `    <link rel="alternate" hreflang="${hreflang}" href="${escapeHtml(href)}" />`,
+    )
+    .join("\n");
+
+  template = template.replace(
+    /(<link rel="canonical" href="[^"]*" \/>)/,
+    `$1\n${hreflangTags}`,
   );
 
   const stateScript =

@@ -488,7 +488,7 @@ export default function Home() {
   const { language } = useLanguage();
 
   useEffect(() => {
-    updateSEO(getSEOData("home", language));
+    updateSEO({ ...getSEOData("home", language), language });
   }, [language]);
 
   return (

@@ -30,6 +30,12 @@ export default function NewsDetail() {
                     language === "ru" && item.titleRu ? item.titleRu : item.title;
       const desc = item.content?.replace(/<[^>]*>/g, "").substring(0, 160) || item.excerpt || "";
       updateSEO({
+        language,
+        availableLanguages: [
+          "en",
+          ...(item.titleTr && item.contentTr ? ["tr" as const] : []),
+          ...(item.titleRu && item.contentRu ? ["ru" as const] : []),
+        ],
         title: `${seoTitle} | Norm Yacht News`,
         description: desc,
         keywords: `${seoTitle}, marine engineering news, yacht industry, Norm Yacht, Tuzla Istanbul`,

@@ -317,23 +317,38 @@ export async function registerRoutes(httpServer: any, app: Express): Promise<Ser
 
       for (const item of services) {
         if (!item.slug) continue;
+
         urls.add(`/services/${item.slug}`);
-        urls.add(`/hizmetler/${item.slug}`);
-        urls.add(`/uslugi/${item.slug}`);
+
+        if (item.titleTr && item.descriptionTr) {
+          urls.add(`/hizmetler/${item.slug}`);
+        }
+
+        if (item.titleRu && item.descriptionRu) {
+          urls.add(`/uslugi/${item.slug}`);
+        }
       }
 
       for (const item of projects) {
         if (!item.slug) continue;
+
         urls.add(`/projects/${item.slug}`);
-        urls.add(`/projeler/${item.slug}`);
-        urls.add(`/proekty/${item.slug}`);
+
+        if (item.titleTr && item.descriptionTr) {
+          urls.add(`/projeler/${item.slug}`);
+        }
+
+        if (item.titleRu && item.descriptionRu) {
+          urls.add(`/proekty/${item.slug}`);
+        }
       }
 
       for (const item of newsItems) {
         if (!item.slug) continue;
+
+        // News body translations are currently empty,
+        // so only the English detail URL belongs in the sitemap.
         urls.add(`/news/${item.slug}`);
-        urls.add(`/haberler/${item.slug}`);
-        urls.add(`/novosti/${item.slug}`);
       }
 
       const escapeXml = (value: string) =>

@@ -28,7 +28,7 @@ export default function Contact() {
   const { toast } = useToast();
 
   useEffect(() => {
-    updateSEO(getSEOData("contact", language));
+    updateSEO({ ...getSEOData("contact", language), language });
   }, [language]);
 
   const contactSchema = z.object({

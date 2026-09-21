@@ -156,6 +156,12 @@ export default function ServiceDetail() {
                     language === "ru" && service.titleRu ? service.titleRu : service.title;
       const desc = service.description?.replace(/<[^>]*>/g, "").substring(0, 160) || "";
       updateSEO({
+        language,
+        availableLanguages: [
+          "en",
+          ...(service.titleTr && service.descriptionTr ? ["tr" as const] : []),
+          ...(service.titleRu && service.descriptionRu ? ["ru" as const] : []),
+        ],
         title: `${seoTitle} | Marine Engineering Services - Norm Yacht`,
         description: desc,
         keywords: `${seoTitle}, yacht ${seoTitle.toLowerCase()}, marine ${seoTitle.toLowerCase()}, superyacht service, Norm Yacht, Tuzla Istanbul`,

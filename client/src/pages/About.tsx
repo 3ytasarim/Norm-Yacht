@@ -10,7 +10,7 @@ export default function About() {
   const t = useTranslation(language);
 
   useEffect(() => {
-    updateSEO(getSEOData("about", language));
+    updateSEO({ ...getSEOData("about", language), language });
   }, [language]);
 
   const missionPoints = t.about.missionPoints;

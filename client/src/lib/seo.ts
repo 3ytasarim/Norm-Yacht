@@ -1,5 +1,187 @@
 import type { Language } from "./i18n";
 
+const SITE_URL = "https://normyacht.com";
+
+const OG_LOCALES: Record<Language, string> = {
+  en: "en_US",
+  tr: "tr_TR",
+  ru: "ru_RU",
+};
+
+const STATIC_PATHS: Record<
+  string,
+  Partial<Record<Language, string>>
+> = {
+  about: {
+    en: "/about",
+    tr: "/hakkimizda",
+    ru: "/o-nas",
+  },
+  services: {
+    en: "/services",
+    tr: "/hizmetler",
+    ru: "/uslugi",
+  },
+  projects: {
+    en: "/projects",
+    tr: "/projeler",
+    ru: "/proekty",
+  },
+  news: {
+    en: "/news",
+    tr: "/haberler",
+    ru: "/novosti",
+  },
+  contact: {
+    en: "/contact",
+    tr: "/iletisim",
+    ru: "/kontakty",
+  },
+};
+
+function absoluteUrl(pathname: string) {
+  return `${SITE_URL}${pathname === "/" ? "/" : pathname.replace(/\/$/, "")}`;
+}
+
+function setMeta(selector: string, attribute: string, value: string) {
+  let element = document.querySelector<HTMLMetaElement>(selector);
+
+  if (!element) {
+    element = document.createElement("meta");
+
+    if (selector.includes("property=")) {
+      const match = selector.match(/property="([^"]+)"/);
+      if (match) element.setAttribute("property", match[1]);
+    } else {
+      const match = selector.match(/name="([^"]+)"/);
+      if (match) element.setAttribute("name", match[1]);
+    }
+
+    document.head.appendChild(element);
+  }
+
+  element.setAttribute(attribute, value);
+}
+
+function updateClientTechnicalSEO(
+  language: Language,
+  availableLanguages?: Language[],
+) {
+  const pathname = window.location.pathname;
+  const canonical = absoluteUrl(pathname);
+
+  let canonicalTag =
+    document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+
+  if (!canonicalTag) {
+    canonicalTag = document.createElement("link");
+    canonicalTag.rel = "canonical";
+    document.head.appendChild(canonicalTag);
+  }
+
+  canonicalTag.href = canonical;
+
+  setMeta('meta[property="og:url"]', "content", canonical);
+  setMeta(
+    'meta[property="og:locale"]',
+    "content",
+    OG_LOCALES[language],
+  );
+
+  document
+    .querySelectorAll('meta[property="og:locale:alternate"]')
+    .forEach((element) => element.remove());
+
+  for (const locale of ["en_US", "tr_TR", "ru_RU"]) {
+    if (locale === OG_LOCALES[language]) continue;
+
+    const element = document.createElement("meta");
+    element.setAttribute("property", "og:locale:alternate");
+    element.setAttribute("content", locale);
+    document.head.appendChild(element);
+  }
+
+  document
+    .querySelectorAll('link[rel="alternate"][hreflang]')
+    .forEach((element) => element.remove());
+
+  let paths: Partial<Record<Language, string>> = {};
+
+  if (pathname === "/") {
+    paths = { en: "/" };
+  } else {
+    const staticEntry = Object.values(STATIC_PATHS).find(
+      (entry) => Object.values(entry).includes(pathname),
+    );
+
+    if (staticEntry) {
+      paths = staticEntry;
+    } else {
+      const detailMatch = pathname.match(
+        /^\/(services|hizmetler|uslugi|projects|projeler|proekty)\/([^/]+)\/?$/,
+      );
+
+      if (detailMatch) {
+        const [, prefix, slug] = detailMatch;
+
+        if (["services", "hizmetler", "uslugi"].includes(prefix)) {
+          paths = {
+            en: `/services/${slug}`,
+            tr: `/hizmetler/${slug}`,
+            ru: `/uslugi/${slug}`,
+          };
+        } else {
+          paths = {
+            en: `/projects/${slug}`,
+            tr: `/projeler/${slug}`,
+            ru: `/proekty/${slug}`,
+          };
+        }
+      }
+
+      const newsMatch = pathname.match(
+        /^\/(news|haberler|novosti)\/([^/]+)\/?$/,
+      );
+
+      if (newsMatch) {
+        const slug = newsMatch[2];
+
+        // News body translations do not currently exist.
+        paths = {
+          en: `/news/${slug}`,
+        };
+      }
+    }
+  }
+
+  if (availableLanguages) {
+    paths = Object.fromEntries(
+      Object.entries(paths).filter(([lang]) =>
+        availableLanguages.includes(lang as Language),
+      ),
+    ) as Partial<Record<Language, string>>;
+  }
+
+  for (const lang of ["en", "tr", "ru"] as const) {
+    const href = paths[lang];
+    if (!href) continue;
+
+    const link = document.createElement("link");
+    link.rel = "alternate";
+    link.hreflang = lang;
+    link.href = absoluteUrl(href);
+    document.head.appendChild(link);
+  }
+
+  if (paths.en) {
+    const link = document.createElement("link");
+    link.rel = "alternate";
+    link.hreflang = "x-default";
+    link.href = absoluteUrl(paths.en);
+    document.head.appendChild(link);
+  }
+}
+
 export function updateSEO({
   title,
   description,
@@ -7,6 +189,8 @@ export function updateSEO({
   ogTitle,
   ogDescription,
   ogImage,
+  language,
+  availableLanguages,
 }: {
   title: string;
   description: string;
@@ -14,8 +198,14 @@ export function updateSEO({
   ogTitle?: string;
   ogDescription?: string;
   ogImage?: string;
+  language?: Language;
+  availableLanguages?: Language[];
 }) {
   document.title = title;
+
+  if (language) {
+    updateClientTechnicalSEO(language, availableLanguages);
+  }
 
   let metaDesc = document.querySelector('meta[name="description"]');
   if (!metaDesc) {
