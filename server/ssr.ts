@@ -36,6 +36,7 @@ type SEOResult = {
   ogImage: string;
   ogLocale: "en_US" | "tr_TR" | "ru_RU";
   alternates: SEOAlternate[];
+  structuredData?: Record<string, unknown>[];
 };
 
 const SITE_URL = "https://normyacht.com";
@@ -141,6 +142,37 @@ function safeJson(value: unknown): string {
     .replace(/&/g, "\\u0026")
     .replace(/\u2028/g, "\\u2028")
     .replace(/\u2029/g, "\\u2029");
+}
+
+function schemaImageUrl(value: unknown): string | undefined {
+  const image = String(value ?? "").trim();
+  if (!image) return undefined;
+  if (/^https?:\/\//i.test(image)) return image;
+  return `${SITE_URL}${image.startsWith("/") ? "" : "/"}${image}`;
+}
+
+function organizationSchemaRef() {
+  return {
+    "@type": "Organization",
+    "@id": `${SITE_URL}/#organization`,
+    name: "NormYacht",
+    url: `${SITE_URL}/`,
+  };
+}
+
+function breadcrumbSchema(
+  items: Array<{ name: string; path: string }>,
+): Record<string, unknown> {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: item.name,
+      item: absoluteUrl(item.path),
+    })),
+  };
 }
 
 function localizedField(
@@ -253,6 +285,42 @@ export async function renderPublicPage(pathname: string) {
         title: `${title} | NormYacht`,
         description: description || seo.description,
         alternates: buildAlternates(serviceAlternatePaths),
+        structuredData: [
+          breadcrumbSchema([
+            { name: "Home", path: "/" },
+            {
+              name:
+                language === "tr"
+                  ? "Hizmetler"
+                  : language === "ru"
+                    ? "Услуги"
+                    : "Services",
+              path:
+                language === "tr"
+                  ? "/hizmetler"
+                  : language === "ru"
+                    ? "/uslugi"
+                    : "/services",
+            },
+            { name: title, path: pathname },
+          ]),
+          {
+            "@context": "https://schema.org",
+            "@type": "Service",
+            "@id": `${absoluteUrl(pathname)}#service`,
+            name: title,
+            description: stripHtml(
+              localizedField(service, "description", language),
+            ),
+            url: absoluteUrl(pathname),
+            provider: organizationSchemaRef(),
+            areaServed: "Worldwide",
+            serviceType: title,
+            ...(schemaImageUrl(service.image)
+              ? { image: schemaImageUrl(service.image) }
+              : {}),
+          },
+        ],
         ogImage: service.image
           ? service.image.startsWith("http")
             ? service.image
@@ -298,6 +366,46 @@ export async function renderPublicPage(pathname: string) {
         title: `${title} | NormYacht`,
         description: description || seo.description,
         alternates: buildAlternates(projectAlternatePaths),
+        structuredData: [
+          breadcrumbSchema([
+            { name: "Home", path: "/" },
+            {
+              name:
+                language === "tr"
+                  ? "Projeler"
+                  : language === "ru"
+                    ? "Проекты"
+                    : "Projects",
+              path:
+                language === "tr"
+                  ? "/projeler"
+                  : language === "ru"
+                    ? "/proekty"
+                    : "/projects",
+            },
+            { name: title, path: pathname },
+          ]),
+          {
+            "@context": "https://schema.org",
+            "@type": "CreativeWork",
+            "@id": `${absoluteUrl(pathname)}#project`,
+            name: title,
+            description: stripHtml(
+              localizedField(project, "description", language),
+            ),
+            url: absoluteUrl(pathname),
+            creator: organizationSchemaRef(),
+            ...(schemaImageUrl(project.mainImage)
+              ? { image: schemaImageUrl(project.mainImage) }
+              : {}),
+            ...(project.completionDate
+              ? { dateCreated: project.completionDate }
+              : {}),
+            ...(project.category
+              ? { genre: project.category }
+              : {}),
+          },
+        ],
         ogImage: project.mainImage
           ? project.mainImage.startsWith("http")
             ? project.mainImage
@@ -342,6 +450,58 @@ export async function renderPublicPage(pathname: string) {
         title: `${title} | NormYacht`,
         description: truncate(stripHtml(excerpt)) || seo.description,
         alternates: buildAlternates(newsAlternatePaths),
+        structuredData: [
+          breadcrumbSchema([
+            { name: "Home", path: "/" },
+            {
+              name:
+                language === "tr"
+                  ? "Haberler"
+                  : language === "ru"
+                    ? "Новости"
+                    : "News",
+              path:
+                language === "tr"
+                  ? "/haberler"
+                  : language === "ru"
+                    ? "/novosti"
+                    : "/news",
+            },
+            { name: title, path: pathname },
+          ]),
+          {
+            "@context": "https://schema.org",
+            "@type": "NewsArticle",
+            "@id": `${absoluteUrl(pathname)}#article`,
+            headline: title,
+            description:
+              truncate(stripHtml(excerpt)) || seo.description,
+            url: absoluteUrl(pathname),
+            mainEntityOfPage: {
+              "@type": "WebPage",
+              "@id": absoluteUrl(pathname),
+            },
+            publisher: organizationSchemaRef(),
+            ...(item.author
+              ? {
+                  author: {
+                    "@type": "Organization",
+                    name: item.author,
+                  },
+                }
+              : {}),
+            ...(schemaImageUrl(item.image)
+              ? { image: [schemaImageUrl(item.image)] }
+              : {}),
+            ...(item.publishedAt
+              ? {
+                  datePublished: new Date(
+                    item.publishedAt,
+                  ).toISOString(),
+                }
+              : {}),
+          },
+        ],
         ogImage: item.image
           ? item.image.startsWith("http")
             ? item.image
@@ -466,6 +626,20 @@ export async function renderPublicPage(pathname: string) {
     /(<link rel="canonical" href="[^"]*" \/>)/,
     `$1\n${hreflangTags}`,
   );
+
+  if (seo.structuredData?.length) {
+    const structuredDataTags = seo.structuredData
+      .map(
+        (data) =>
+          `    <script type="application/ld+json">${safeJson(data)}</script>`,
+      )
+      .join("\n");
+
+    template = template.replace(
+      "</head>",
+      `${structuredDataTags}\n</head>`,
+    );
+  }
 
   const stateScript =
     `<script>window.__NORMYACHT_SSR__=${safeJson({
