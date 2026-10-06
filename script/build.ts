@@ -38,6 +38,20 @@ async function buildAll() {
   console.log("building client...");
   await viteBuild();
 
+  console.log("building SSR renderer...");
+  await viteBuild({
+    build: {
+      ssr: "src/entry-server.tsx",
+      outDir: "../dist/ssr",
+      emptyOutDir: false,
+      rollupOptions: {
+        output: {
+          entryFileNames: "entry-server.mjs",
+        },
+      },
+    },
+  });
+
   console.log("building server...");
   const pkg = JSON.parse(await readFile("package.json", "utf-8"));
   const allDeps = [

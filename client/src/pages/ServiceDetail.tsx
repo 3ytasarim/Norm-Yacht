@@ -14,7 +14,7 @@ const iconMap: Record<string, any> = {
   Waves, Anchor, Navigation, Settings, Activity, Gauge, Hammer, Zap, Cog, Wrench, Crane: Anchor,
 };
 
-const STABILIZER_BRANDS = ["Quantum", "Wespar", "Naiad", "ABT TRAC"];
+const STABILIZER_BRANDS = ["Quantum", "Wesmar", "Naiad", "ABT TRAC"];
 
 type ServiceImg = { id: number; imageUrl: string; order: number; brand?: string | null };
 
@@ -156,6 +156,12 @@ export default function ServiceDetail() {
                     language === "ru" && service.titleRu ? service.titleRu : service.title;
       const desc = service.description?.replace(/<[^>]*>/g, "").substring(0, 160) || "";
       updateSEO({
+        language,
+        availableLanguages: [
+          "en",
+          ...(service.titleTr && service.descriptionTr ? ["tr" as const] : []),
+          ...(service.titleRu && service.descriptionRu ? ["ru" as const] : []),
+        ],
         title: `${seoTitle} | Marine Engineering Services - Norm Yacht`,
         description: desc,
         keywords: `${seoTitle}, yacht ${seoTitle.toLowerCase()}, marine ${seoTitle.toLowerCase()}, superyacht service, Norm Yacht, Tuzla Istanbul`,

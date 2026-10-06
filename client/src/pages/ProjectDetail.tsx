@@ -63,6 +63,12 @@ export default function ProjectDetail() {
                     language === "ru" && project.titleRu ? project.titleRu : project.title;
       const desc = project.description?.replace(/<[^>]*>/g, "").substring(0, 160) || "";
       updateSEO({
+        language,
+        availableLanguages: [
+          "en",
+          ...(project.titleTr && project.descriptionTr ? ["tr" as const] : []),
+          ...(project.titleRu && project.descriptionRu ? ["ru" as const] : []),
+        ],
         title: `${seoTitle} | Marine Engineering Project - Norm Yacht`,
         description: desc,
         keywords: `${seoTitle}, yacht project, marine engineering project, superyacht refit, Norm Yacht, Tuzla Istanbul`,

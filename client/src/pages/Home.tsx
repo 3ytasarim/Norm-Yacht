@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { ChevronLeft, ChevronRight, ArrowRight, Anchor, Waves, Award, Users, Wrench, Navigation, Settings, Activity, Gauge, Hammer, Zap, Cog } from "lucide-react";
-import aboutImage from "@assets/about_1772246089936.jpg";
+import aboutImage from "@assets/about_1772246089936.webp";
 
 function stripHtml(html: string | null | undefined): string {
   if (!html) return "";
@@ -132,6 +132,9 @@ function HeroSlider() {
           <img
             src={slide.rightImage}
             alt={getTitle(slide)}
+            loading={current === 0 ? "eager" : "lazy"}
+            fetchPriority={current === 0 ? "high" : "auto"}
+            decoding="async"
             className="w-full h-full object-cover animate-slide-in-right"
           />
         ) : (
@@ -235,6 +238,10 @@ function AboutSection() {
               <img
                 src={aboutImage}
                 alt="Norm Yacht - Tuzla, Istanbul"
+                width={1200}
+                height={900}
+                loading="lazy"
+                decoding="async"
                 className="w-full h-auto"
               />
             </div>
@@ -279,6 +286,8 @@ function ServicesSection() {
                       <img
                         src={service.image || "https://images.unsplash.com/photo-1605281317010-fe5ffe798166?w=600&h=400&fit=crop"}
                         alt={title}
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
@@ -344,6 +353,8 @@ function ProjectsSection() {
                         <img
                           src={project.mainImage}
                           alt={title}
+                          loading="lazy"
+                          decoding="async"
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
                       ) : (
@@ -419,6 +430,8 @@ function NewsSection() {
                         <img
                           src={item.image}
                           alt={title}
+                          loading="lazy"
+                          decoding="async"
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
                       ) : (
@@ -487,7 +500,7 @@ export default function Home() {
   const { language } = useLanguage();
 
   useEffect(() => {
-    updateSEO(getSEOData("home", language));
+    updateSEO({ ...getSEOData("home", language), language });
   }, [language]);
 
   return (

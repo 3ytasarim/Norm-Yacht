@@ -20,7 +20,7 @@ export default function Services() {
   const { data: services = [], isLoading } = useQuery<Service[]>({ queryKey: ["/api/services"] });
 
   useEffect(() => {
-    updateSEO(getSEOData("services", language));
+    updateSEO({ ...getSEOData("services", language), language });
   }, [language]);
 
   return (

@@ -1,7 +1,12 @@
-import { useEffect } from "react";
-import { Switch, Route } from "wouter";
+import { lazy, Suspense, useEffect } from "react";
+import { Switch, Route, Router as WouterRouter } from "wouter";
 import { queryClient } from "./lib/queryClient";
-import { QueryClientProvider } from "@tanstack/react-query";
+import {
+  HydrationBoundary,
+  QueryClientProvider,
+  type DehydratedState,
+  type QueryClient,
+} from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { LanguageProvider } from "@/lib/languageContext";
@@ -18,9 +23,10 @@ import ProjectDetail from "@/pages/ProjectDetail";
 import News from "@/pages/News";
 import NewsDetail from "@/pages/NewsDetail";
 import Contact from "@/pages/Contact";
-import AdminLogin from "@/pages/admin/AdminLogin";
-import AdminDashboard from "@/pages/admin/AdminDashboard";
+const AdminLogin = lazy(() => import("@/pages/admin/AdminLogin"));
+const AdminDashboard = lazy(() => import("@/pages/admin/AdminDashboard"));
 import { useLocation } from "wouter";
+import type { Language } from "@/lib/i18n";
 
 function ScrollToTop() {
   const [location] = useLocation();
@@ -83,25 +89,57 @@ function Router() {
         <Route path="/iletisim" component={Contact} />
         <Route path="/kontakty" component={Contact} />
 
-        <Route path="/admin" component={AdminLogin} />
-        <Route path="/admin/dashboard" component={AdminDashboard} />
+        <Route path="/admin">
+          <Suspense fallback={null}>
+            <AdminLogin />
+          </Suspense>
+        </Route>
+        <Route path="/admin/dashboard">
+          <Suspense fallback={null}>
+            <AdminDashboard />
+          </Suspense>
+        </Route>
         <Route component={NotFound} />
       </Switch>
     </Layout>
   );
 }
 
-function App() {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <LanguageProvider>
-          <Toaster />
-          <Router />
-        </LanguageProvider>
-      </TooltipProvider>
+type AppProps = {
+  ssrPath?: string;
+  initialLanguage?: Language;
+  dehydratedState?: DehydratedState;
+  client?: QueryClient;
+};
+
+function App({
+  ssrPath,
+  initialLanguage,
+  dehydratedState,
+  client = queryClient,
+}: AppProps = {}) {
+  const content = (
+    <QueryClientProvider client={client}>
+      <HydrationBoundary state={dehydratedState}>
+        <TooltipProvider>
+          <LanguageProvider initialLanguage={initialLanguage}>
+            <Toaster />
+            <Router />
+          </LanguageProvider>
+        </TooltipProvider>
+      </HydrationBoundary>
     </QueryClientProvider>
   );
+
+  if (ssrPath) {
+    return (
+      <WouterRouter ssrPath={ssrPath}>
+        {content}
+      </WouterRouter>
+    );
+  }
+
+  return content;
 }
 
 export default App;

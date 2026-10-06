@@ -16,7 +16,7 @@ export default function News() {
   const { data: newsItems = [], isLoading } = useQuery<NewsItem[]>({ queryKey: ["/api/news"] });
 
   useEffect(() => {
-    updateSEO(getSEOData("news", language));
+    updateSEO({ ...getSEOData("news", language), language });
   }, [language]);
 
   return (
