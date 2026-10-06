@@ -9,7 +9,7 @@ import type { SliderItem, Service, Project, NewsItem } from "@shared/schema";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { ChevronLeft, ChevronRight, ArrowRight, Anchor, Waves, Award, Users, Calendar, Wrench, Navigation, Settings, Activity, Gauge, Hammer, Zap, Cog } from "lucide-react";
+import { ChevronLeft, ChevronRight, ArrowRight, Anchor, Waves, Award, Users, Wrench, Navigation, Settings, Activity, Gauge, Hammer, Zap, Cog } from "lucide-react";
 import aboutImage from "@assets/about_1772246089936.jpg";
 
 function stripHtml(html: string | null | undefined): string {
@@ -179,15 +179,14 @@ function StatsBar() {
   const { language } = useLanguage();
   const t = useTranslation(language);
   const stats = [
-    { icon: Calendar, label: t.home.statsFounded, value: "2019" },
     { icon: Wrench, label: t.home.statsProjects, value: "100+" },
-    { icon: Users, label: t.home.statsEngineers, value: "15+" },
-    { icon: Award, label: t.home.statsExperience, value: "5+" },
+    { icon: Award, label: t.home.statsExperience, value: "15+" },
+    { icon: Users, label: t.about.stats.clients, value: "87+" },
   ];
   return (
     <div className="bg-[#0a1428] text-white">
       <div className="max-w-7xl mx-auto px-4 py-10">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-0 md:divide-x md:divide-white/10">
+        <div className="grid grid-cols-3 gap-6 md:gap-0 md:divide-x md:divide-white/10">
           {stats.map((stat, i) => {
             const Icon = stat.icon;
             return (
@@ -235,7 +234,7 @@ function AboutSection() {
             <div className="rounded-2xl overflow-hidden shadow-xl">
               <img
                 src={aboutImage}
-                alt="Norm Yacht - Since 2019 Tuzla, Istanbul"
+                alt="Norm Yacht - Tuzla, Istanbul"
                 className="w-full h-auto"
               />
             </div>

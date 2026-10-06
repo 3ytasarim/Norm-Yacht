@@ -76,7 +76,7 @@ const SEO_DATA_EN: SEODataMap = {
   },
   about: {
     title: "About Norm Yacht | Marine Engineering Company in Tuzla, Istanbul",
-    description: "Norm Yacht was established in 2019 in Tuzla, Istanbul. We deliver high-quality engineering solutions in superyacht stabilization systems, marine hydraulics, and turnkey yacht engineering projects.",
+    description: "Norm Yacht is a marine engineering company based in Tuzla, Istanbul. We deliver high-quality engineering solutions in superyacht stabilization systems, marine hydraulics, and turnkey yacht engineering projects.",
     keywords: "Norm Yacht about, marine engineering company Turkey, yacht engineering Istanbul, Tuzla shipyard company, superyacht engineering firm",
   },
   services: {
@@ -109,7 +109,7 @@ const SEO_DATA_TR: SEODataMap = {
   },
   about: {
     title: "Hakkımızda | Norm Yacht - Tuzla, İstanbul Deniz Mühendisliği Şirketi",
-    description: "Norm Yacht, 2019 yılında Tuzla, İstanbul'da kurulmuştur. Süper yat stabilizasyon sistemleri, deniz hidroliği ve anahtar teslimi yat mühendisliği projelerinde yüksek kaliteli çözümler sunuyoruz.",
+    description: "Norm Yacht, Tuzla, İstanbul merkezli bir deniz mühendisliği şirketidir. Süper yat stabilizasyon sistemleri, deniz hidroliği ve anahtar teslimi yat mühendisliği projelerinde yüksek kaliteli çözümler sunuyoruz.",
     keywords: "Norm Yacht hakkında, deniz mühendisliği şirketi Türkiye, yat mühendisliği İstanbul, Tuzla tersane şirketi",
   },
   services: {
@@ -142,7 +142,7 @@ const SEO_DATA_RU: SEODataMap = {
   },
   about: {
     title: "О нас | Norm Yacht - Морская инженерная компания в Тузла, Стамбул",
-    description: "Norm Yacht была основана в 2019 году в Тузле, Стамбул. Мы предоставляем высококачественные инженерные решения в области систем стабилизации суперяхт, морской гидравлики и комплексных яхтенных проектов.",
+    description: "Norm Yacht — морская инженерная компания, базирующаяся в Тузле, Стамбул. Мы предоставляем высококачественные инженерные решения в области систем стабилизации суперяхт, морской гидравлики и комплексных яхтенных проектов.",
     keywords: "Norm Yacht о компании, морская инженерная компания Турция, яхтенная инженерия Стамбул, верфь Тузла",
   },
   services: {

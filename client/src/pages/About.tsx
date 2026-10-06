@@ -45,12 +45,11 @@ export default function About() {
                   className="w-full h-auto"
                 />
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-3 gap-4">
                 {[
-                  { value: "2019", label: t.about.stats.founded },
                   { value: "100+", label: t.about.stats.projects },
-                  { value: "5+", label: t.about.stats.experience },
-                  { value: "50+", label: t.about.stats.clients },
+                  { value: "15+", label: t.about.stats.experience },
+                  { value: "87+", label: t.about.stats.clients },
                 ].map((stat, i) => (
                   <div key={i} className="bg-gray-50 border border-gray-100 rounded-lg p-5 text-center">
                     <div className="text-3xl font-black text-[#F5A623] mb-1">{stat.value}</div>

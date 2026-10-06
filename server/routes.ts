@@ -103,9 +103,9 @@ async function seedData() {
     });
 
     await storage.createSliderItem({
-      title: "Trusted Since 2019",
-      titleTr: "2019'dan Beri Güvenilir",
-      titleRu: "Доверие с 2019 года",
+      title: "A Trusted Engineering Partner",
+      titleTr: "Güvenilir Mühendislik Ortağınız",
+      titleRu: "Надёжный инженерный партнёр",
       subtitle: "Based in Tuzla, Istanbul — the heart of Turkish maritime industry, serving clients across the globe.",
       subtitleTr: "Türk denizcilik sektörünün kalbi Tuzla, İstanbul'da faaliyet göstererek dünya genelinde müşterilere hizmet veriyoruz.",
       subtitleRu: "Базируемся в Тузла, Стамбул — в центре турецкой морской индустрии, обслуживая клиентов по всему миру.",
